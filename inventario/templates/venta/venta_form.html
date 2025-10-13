@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Nueva Venta{% endblock %}
+{% block header %}Registrar Venta{% endblock %}
+
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+  {{ form|crispy }}
+
+  <h5>Items de la Venta</h5>
+  {{ formset.management_form }}
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio Unitario</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for form in formset %}
+      <tr>
+        <td>{{ form.producto }}</td>
+        <td>{{ form.cantidad }}</td>
+        <td>{{ form.precio_unitario }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <button type="submit" class="btn btn-success">
+    <i class="fas fa-check-circle"></i> Confirmar Venta
+  </button>
+  <a href="{% url 'ventas:venta_list' %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Cancelar
+  </a>
+</form>
+{% endblock %}

@@ -37,27 +37,55 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'productos:producto_list' %}">
-                            <i class="fas fa-list"></i> Productos
+                    <!-- Productos -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="productosDropdown" role="button" data-toggle="dropdown">
+                            <i class="fas fa-box"></i> Productos
                         </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{% url 'productos:producto_list' %}">
+                                <i class="fas fa-list"></i> Listado
+                            </a>
+                            <a class="dropdown-item" href="{% url 'productos:producto_create' %}">
+                                <i class="fas fa-plus-circle"></i> Nuevo Producto
+                            </a>
+                            <a class="dropdown-item" href="{% url 'productos:stock_bajo_list' %}">
+                                <i class="fas fa-exclamation-triangle"></i> Stock Bajo
+                            </a>
+                        </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'productos:producto_create' %}">
-                            <i class="fas fa-plus-circle"></i> Nuevo Producto
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'productos:stock_bajo_list' %}">
-                            <i class="fas fa-exclamation-triangle"></i> Stock Bajo
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'clientes:cliente_list' %}">
+
+                    <!-- Clientes -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="clientesDropdown" role="button" data-toggle="dropdown">
                             <i class="fas fa-users"></i> Clientes
                         </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{% url 'clientes:cliente_list' %}">
+                                <i class="fas fa-list"></i> Listado
+                            </a>
+                            <a class="dropdown-item" href="{% url 'clientes:cliente_create' %}">
+                                <i class="fas fa-user-plus"></i> Nuevo Cliente
+                            </a>
+                        </div>
+                    </li>
+
+                    <!-- Ventas -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="ventasDropdown" role="button" data-toggle="dropdown">
+                            <i class="fas fa-shopping-cart"></i> Ventas
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{% url 'ventas:venta_list' %}">
+                                <i class="fas fa-list"></i> Listado
+                            </a>
+                            <a class="dropdown-item" href="{% url 'ventas:venta_create' %}">
+                                <i class="fas fa-plus-circle"></i> Nueva Venta
+                            </a>
+                        </div>
                     </li>
                 </ul>
+
                 <ul class="navbar-nav ml-auto">
                     {% if user.is_authenticated %}
                         <li class="nav-item">
@@ -84,12 +112,12 @@
 
     <div class="container mt-4">
         {% bootstrap_messages %}
-        
+
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>{% block header %}{% endblock %}</h2>
             {% block extra_buttons %}{% endblock %}
         </div>
-        
+
         {% block content %}
         {% endblock %}
     </div>

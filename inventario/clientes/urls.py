@@ -4,7 +4,7 @@ from .views import (
     ClienteCreateView,
     ClienteUpdateView,
     ClienteDeleteView,
-    ClienteDetailView,  # 👈 Asegurate de importar esta vista
+    ClienteDetailView, 
 )
 
 app_name = 'clientes'

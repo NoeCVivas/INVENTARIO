@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Detalle de Venta{% endblock %}
+{% block header %}Venta {{ venta.codigo }}{% endblock %}
+
+{% block content %}
+<ul class="list-group mb-3">
+  <li class="list-group-item"><strong>Cliente:</strong> {{ venta.cliente }}</li>
+  <li class="list-group-item"><strong>Fecha:</strong> {{ venta.fecha }}</li>
+  <li class="list-group-item"><strong>Total:</strong> ${{ venta.total }}</li>
+</ul>
+
+<h5>Items de la Venta</h5>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Producto</th>
+      <th>Cantidad</th>
+      <th>Precio Unitario</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in venta.items.all %}
+    <tr>
+      <td>{{ item.producto }}</td>
+      <td>{{ item.cantidad }}</td>
+      <td>${{ item.precio_unitario }}</td>
+      <td>${{ item.subtotal }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{% url 'ventas:venta_list' %}" class="btn btn-secondary">
+  <i class="fas fa-arrow-left"></i> Volver al listado
+</a>
+{% endblock %}

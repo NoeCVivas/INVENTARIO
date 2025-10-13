@@ -7,28 +7,28 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 class ClienteListView(LoginRequiredMixin, ListView):
     model = Cliente
     paginate_by = 10
-    template_name = 'clientes_app/cliente_list.html'
+    template_name = 'cliente/cliente_list.html'
 
 class ClienteCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Cliente
     form_class = ClienteForm
-    template_name = 'clientes_app/cliente_form.html'
-    success_url = reverse_lazy('cliente_list')
-    permission_required = 'clientes_app.add_cliente'
+    template_name = 'cliente/cliente_form.html'
+    success_url = reverse_lazy('clientes:cliente_list')
+    permission_required = 'clientes.add_cliente'
 
 class ClienteUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Cliente
     form_class = ClienteForm
-    template_name = 'clientes_app/cliente_form.html'
-    success_url = reverse_lazy('cliente_list')
-    permission_required = 'clientes_app.change_cliente'
+    template_name = 'cliente/cliente_form.html'
+    success_url = reverse_lazy('clientes:cliente_list')
+    permission_required = 'clientes.change_cliente'
 
 class ClienteDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Cliente
-    template_name = 'clientes_app/cliente_confirm_delete.html'
-    success_url = reverse_lazy('cliente_list')
-    permission_required = 'clientes_app.delete_cliente'
+    template_name = 'cliente/cliente_confirm_delete.html'
+    success_url = reverse_lazy('clientes:cliente_list')
+    permission_required = 'clientes.delete_cliente'
 
 class ClienteDetailView(LoginRequiredMixin, DetailView):
     model = Cliente
-    template_name = 'clientes_app/cliente_detail.html'
+    template_name = 'cliente/cliente_detail.html'

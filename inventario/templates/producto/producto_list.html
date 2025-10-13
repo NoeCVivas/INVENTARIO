@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
-{% url 'productos:producto_list' %}
-
 
 {% block title %}Lista de Productos{% endblock %}
 {% block header %}Lista de Productos{% endblock %}
@@ -34,12 +32,12 @@
         </thead>
         <tbody>
             {% for producto in productos %}
-            <tr class="{% if producto.necesita_reposicion %}table-warning{% endif %}">
+            <tr class="{% if producto.stock < producto.stock_minimo %}table-warning{% endif %}">
                 <td>
                     {% if producto.imagen %}
-                        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="product-img rounded">
+                        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="img-thumbnail" style="width: 50px; height: 50px;">
                     {% else %}
-                        <div class="product-img bg-light d-flex align-items-center justify-content-center rounded">
+                        <div class="bg-light d-flex align-items-center justify-content-center rounded" style="width: 50px; height: 50px;">
                             <i class="fas fa-image text-muted"></i>
                         </div>
                     {% endif %}
@@ -48,16 +46,16 @@
                 <td>${{ producto.precio }}</td>
                 <td>
                     {{ producto.stock }}
-                    {% if producto.necesita_reposicion %}
+                    {% if producto.stock < producto.stock_minimo %}
                         <i class="fas fa-exclamation-circle text-danger ml-1"></i>
                     {% endif %}
                 </td>
                 <td>{{ producto.stock_minimo }}</td>
                 <td>
-                    {% if producto.necesita_reposicion %}
-                        <span class="badge badge-warning badge-lg">Bajo</span>
+                    {% if producto.stock < producto.stock_minimo %}
+                        <span class="badge badge-warning">Bajo</span>
                     {% else %}
-                        <span class="badge badge-success badge-lg">OK</span>
+                        <span class="badge badge-success">OK</span>
                     {% endif %}
                 </td>
                 <td>
@@ -81,6 +79,7 @@
 {% else %}
 <div class="alert alert-info">
     <i class="fas fa-info-circle"></i> No hay productos registrados.
+    <a href="{% url 'productos:producto_create' %}" class="btn btn-primary btn-sm ml-2">Agregar primer producto</a>
 </div>
 {% endif %}
 {% endblock %}

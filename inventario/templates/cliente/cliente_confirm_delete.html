@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Eliminar Cliente{% endblock %}
+{% block header %}Confirmar eliminación{% endblock %}
+{% block content %}
+<p>¿Estás segura de que querés eliminar al cliente <strong>{{ object }}</strong>?</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">
+    <i class="fas fa-trash-alt"></i> Eliminar
+  </button>
+  <a href="{% url 'clientes:cliente_list' %}" class="btn btn-secondary">
+    <i class="fas fa-times"></i> Cancelar
+  </a>
+</form>
+{% endblock %}

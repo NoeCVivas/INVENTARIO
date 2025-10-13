@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Stock Bajo{% endblock %}
+{% block header %}Productos con Stock por debajo del mínimo{% endblock %}
+
+{% block content %}
+{% if productos %}
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Stock Actual</th>
+      <th>Stock Mínimo</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for producto in productos %}
+    <tr>
+      <td>{{ producto.nombre }}</td>
+      <td>{{ producto.stock }}</td>
+      <td>{{ producto.stock_minimo }}</td>
+      <td>
+        <a href="{% url 'productos:producto_detail' producto.pk %}" class="btn btn-sm btn-info">
+          <i class="fas fa-search"></i> Ver
+        </a>
+        <a href="{% url 'productos:producto_update' producto.pk %}" class="btn btn-sm btn-primary">
+          <i class="fas fa-edit"></i>
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="alert alert-success">
+  Todos los productos tienen stock suficiente.
+</div>
+{% endif %}
+<a href="{% url 'productos:producto_list' %}" class="btn btn-secondary">
+  <i class="fas fa-arrow-left"></i> Volver al listado
+</a>
+{% endblock %}

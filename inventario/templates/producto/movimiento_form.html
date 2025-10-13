@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Registrar Movimiento{% endblock %}
+{% block header %}Movimiento de Stock para {{ producto.nombre }}{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <div class="form-group mt-3">
+        <button type="submit" class="btn btn-success">
+          <i class="fas fa-save"></i> Registrar
+        </button>
+        <a href="{% url 'productos:producto_detail' producto.pk %}" class="btn btn-secondary">
+          <i class="fas fa-arrow-left"></i> Cancelar
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

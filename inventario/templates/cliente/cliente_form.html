@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Formulario de Cliente{% endblock %}
+{% block header %}{{ view.object.pk|yesno:"Editar Cliente,Nuevo Cliente" }}{% endblock %}
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+  {{ form|crispy }}
+  <button type="submit" class="btn btn-primary">
+    <i class="fas fa-save"></i> Guardar
+  </button>
+  <a href="{% url 'clientes:cliente_list' %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Cancelar
+  </a>
+</form>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Clientes{% endblock %}
+{% block header %}Listado de Clientes{% endblock %}
+{% block extra_buttons %}
+<a href="{% url 'clientes:cliente_create' %}" class="btn btn-success">
+  <i class="fas fa-plus-circle"></i> Nuevo Cliente
+</a>
+{% endblock %}
+{% block content %}
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Documento</th>
+      <th>Email</th>
+      <th>Teléfono</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for cliente in clientes %}
+    <tr>
+      <td>{{ cliente.nombre }}</td>
+      <td>{{ cliente.apellido }}</td>
+      <td>{{ cliente.documento }}</td>
+      <td>{{ cliente.email }}</td>
+      <td>{{ cliente.telefono }}</td>
+      <td>
+        <a href="{% url 'clientes:cliente_update' cliente.pk %}" class="btn btn-sm btn-primary">
+          <i class="fas fa-edit"></i>
+        </a>
+        <a href="{% url 'clientes:cliente_delete' cliente.pk %}" class="btn btn-sm btn-danger">
+          <i class="fas fa-trash-alt"></i>
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

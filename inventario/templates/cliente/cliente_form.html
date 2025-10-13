@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
 {% block title %}Formulario de Cliente{% endblock %}
 {% block header %}{{ view.object.pk|yesno:"Editar Cliente,Nuevo Cliente" }}{% endblock %}
 {% block content %}

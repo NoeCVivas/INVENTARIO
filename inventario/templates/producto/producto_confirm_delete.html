@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}Eliminar Producto{% endblock %}
+{% block header %}Confirmar Eliminación{% endblock %}
+
+{% block content %}
+<div class="alert alert-danger">
+    <i class="fas fa-exclamation-triangle"></i>
+    ¿Estás segura de que querés eliminar el producto <strong>{{ object.nombre }}</strong>?
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <a href="{% url 'productos:producto_list' %}" class="btn btn-secondary">
+        <i class="fas fa-times"></i> Cancelar
+    </a>
+    <button type="submit" class="btn btn-danger">
+        <i class="fas fa-trash"></i> Eliminar
+    </button>
+</form>
+{% endblock %}

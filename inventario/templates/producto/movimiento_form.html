@@ -7,10 +7,18 @@
 {% block content %}
 <div class="card">
   <div class="card-body">
+
+    <!-- Información del producto -->
+    <div class="alert alert-info">
+      <strong>Producto:</strong> {{ producto.nombre }}<br>
+      <strong>Stock actual:</strong> {{ producto.stock }}
+    </div>
+
     <form method="post">
       {% csrf_token %}
       {{ form|crispy }}
-      <div class="form-group mt-3">
+
+      <div class="form-group mt-3 d-flex justify-content-between">
         <button type="submit" class="btn btn-success">
           <i class="fas fa-save"></i> Registrar
         </button>

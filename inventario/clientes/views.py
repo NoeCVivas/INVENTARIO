@@ -9,6 +9,7 @@ class ClienteListView(LoginRequiredMixin, ListView):
     paginate_by = 10
     template_name = 'cliente/cliente_list.html'
     context_object_name = 'clientes'
+    paginate_by = 10
 
 class ClienteCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Cliente

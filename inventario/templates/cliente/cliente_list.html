@@ -47,4 +47,7 @@
     {% endfor %}
   </tbody>
 </table>
-{% endblock %}
+ 
+{% include 'paginator.html' with page_obj=page_obj %}
+
+ {% endblock %}

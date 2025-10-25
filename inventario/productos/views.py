@@ -7,25 +7,24 @@ from django.utils import timezone
 from .models import Producto, MovimientoStock
 from .forms import ProductoForm, MovimientoStockForm, AjusteStockForm
 
+# Listado general con filtros y paginación
 class ProductoListView(ListView):
     model = Producto
     template_name = 'producto/producto_list.html'
     context_object_name = 'productos'
-    paginate_by = 5 
-    
+    paginate_by = 5
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        nombre = self.request.GET.get('nombre')
         stock_bajo = self.request.GET.get('stock_bajo')
+        if nombre:
+            queryset = queryset.filter(nombre__icontains=nombre)
         if stock_bajo:
             queryset = queryset.filter(stock__lt=F('stock_minimo'))
         return queryset.order_by('nombre')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['stock_bajo'] = self.request.GET.get('stock_bajo', '')
-        return context
-
+# Detalle de producto con últimos movimientos y formulario de ajuste
 class ProductoDetailView(DetailView):
     model = Producto
     template_name = 'producto/producto_detail.html'
@@ -37,6 +36,7 @@ class ProductoDetailView(DetailView):
         context['form_ajuste'] = AjusteStockForm()
         return context
 
+# Crear producto con movimiento inicial si hay stock
 class ProductoCreateView(CreateView):
     model = Producto
     form_class = ProductoForm
@@ -57,6 +57,7 @@ class ProductoCreateView(CreateView):
         messages.success(self.request, 'Producto creado exitosamente.')
         return response
 
+# Actualizar producto
 class ProductoUpdateView(UpdateView):
     model = Producto
     form_class = ProductoForm
@@ -68,6 +69,7 @@ class ProductoUpdateView(UpdateView):
         messages.success(self.request, 'Producto actualizado exitosamente.')
         return response
 
+# Eliminar producto
 class ProductoDeleteView(DeleteView):
     model = Producto
     template_name = 'producto/producto_confirm_delete.html'
@@ -77,6 +79,7 @@ class ProductoDeleteView(DeleteView):
         messages.success(self.request, 'Producto eliminado exitosamente.')
         return super().delete(request, *args, **kwargs)
 
+# Registrar movimiento de stock (entrada/salida)
 class MovimientoStockCreateView(CreateView):
     model = MovimientoStock
     form_class = MovimientoStockForm
@@ -112,6 +115,7 @@ class MovimientoStockCreateView(CreateView):
         messages.success(self.request, 'Movimiento de stock registrado exitosamente.')
         return redirect('productos:producto_detail', pk=producto.pk)
 
+# Ajuste manual de stock
 class AjusteStockView(FormView):
     form_class = AjusteStockForm
     template_name = 'producto/ajuste_stock_form.html'
@@ -145,10 +149,12 @@ class AjusteStockView(FormView):
 
         return redirect('productos:producto_detail', pk=producto.pk)
 
+# Listado de productos con stock bajo + paginación
 class StockBajoListView(ListView):
     model = Producto
     template_name = 'producto/stock_bajo_list.html'
     context_object_name = 'productos'
+    paginate_by = 5  # 👈 Paginación activa
 
     def get_queryset(self):
         return Producto.objects.filter(stock__lt=F('stock_minimo')).order_by('stock')

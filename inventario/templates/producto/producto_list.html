@@ -101,6 +101,9 @@
         </tbody>
     </table>
 </div>
+
+{% include 'paginator.html' with page_obj=page_obj %}
+
 {% else %}
 <div class="alert alert-info">
     <i class="fas fa-info-circle"></i> No hay productos registrados.

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; }
+    h2 { text-align: center; margin-bottom: 5px; }
+    .header { text-align: center; margin-bottom: 10px; }
+    .info { margin-top: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid #000; padding: 5px; }
+    th { background-color: #f0f0f0; }
+    td.right { text-align: right; }
+    .total-row td { font-weight: bold; background-color: #f9f9f9; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h2>FACTURA</h2>
+    <p><strong>Código:</strong> {{ venta.codigo }}</p>
+  </div>
+
+  <div class="info">
+    <p><strong>Cliente:</strong> {{ venta.cliente.nombre }}</p>
+    <p><strong>Fecha:</strong> {{ venta.fecha|date:"d/m/Y" }}</p>
+    <p><strong>Medio de Pago:</strong> {{ venta.get_medio_pago_display }}</p>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio Unitario</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.producto.nombre }}</td>
+        <td class="right">{{ item.cantidad }}</td>
+        <td class="right">${{ item.precio_unitario }}</td>
+        <td class="right">${{ item.subtotal }}</td>
+      </tr>
+      {% endfor %}
+      <tr class="total-row">
+        <td colspan="3" class="right">Total</td>
+        <td class="right">${{ venta.total }}</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>

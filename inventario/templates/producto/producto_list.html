@@ -24,6 +24,7 @@
             <tr>
                 <th class="text-right">Imagen</th>
                 <th>Nombre</th>
+                <th>SKU</th>
                 <th>Precio</th>
                 <th>Stock</th>
                 <th>Mínimo</th>
@@ -68,6 +69,7 @@
                     {% endif %}
                 </td>
                 <td>{{ producto.nombre }}</td>
+                <td>{{ producto.sku }}</td>
                 <td>${{ producto.precio }}</td>
                 <td>
                     {{ producto.stock }}

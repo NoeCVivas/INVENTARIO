@@ -7,6 +7,7 @@ from django.conf import settings
 from django.conf.urls.static import static      
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
+from ventas.views import generar_factura_pdf
 
 urlpatterns = [
    
@@ -17,7 +18,11 @@ urlpatterns = [
     path('ventas/', include('ventas.urls')),
     path('accounts/login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
-]
+    path('accounts/', include('allauth.urls')),  # login/logout
+    path('factura/<int:venta_id>/pdf/', generar_factura_pdf, name='factura_pdf'),
+
+    ]
+
 
 
 if settings.DEBUG:

@@ -53,9 +53,11 @@ class Producto(models.Model):
         super().save(*args, **kwargs)
 
         # Redimensionar imagen si es muy grande
-        if self.imagen:
+        if self.imagen and hasattr(self.imagen, 'path'):
             try:
                 img = Image.open(self.imagen.path)
+                img.verify()  # valida formato
+                img = Image.open(self.imagen.path)  # reabrir para modificar
                 if img.height > 300 or img.width > 300:
                     output_size = (300, 300)
                     img.thumbnail(output_size)

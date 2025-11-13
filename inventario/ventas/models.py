@@ -1,12 +1,26 @@
 from django.db import models
+from datetime import date
 from clientes.models import Cliente
 from productos.models import Producto
 
 class Venta(models.Model):
     codigo = models.CharField(max_length=20, unique=True)
     cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT)
-    fecha = models.DateField(auto_now_add=True)
+    fecha = models.DateField(default=date.today)  # ✅ editable con calendario
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    medio_pago = models.CharField(
+        max_length=20,
+        choices=[
+            ('efectivo', 'Efectivo'),
+            ('credito', 'Tarjeta de Crédito'),
+            ('debito', 'Tarjeta de Débito'),
+            ('qr', 'QR'),
+        ],
+        default='efectivo',  # ✅ evita errores en migración
+    )
+
+    def __str__(self):
+        return f"{self.codigo} - {self.cliente}"
 
 class ItemVenta(models.Model):
     venta = models.ForeignKey(Venta, related_name='items', on_delete=models.CASCADE)
@@ -14,3 +28,6 @@ class ItemVenta(models.Model):
     cantidad = models.PositiveIntegerField()
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.producto.nombre} x {self.cantidad}"

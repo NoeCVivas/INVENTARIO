@@ -1,10 +1,34 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block title %}Inicio{% endblock %}
 {% block header %}Bienvenida al Sistema de Inventario{% endblock %}
 
 {% block content %}
+
+{% if not user.is_authenticated %}
+<div class="row justify-content-center mb-5">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="mb-3">Iniciar sesión</h4>
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary">Ingresar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-success text-center">
+    Hola <strong>{{ user.username }}</strong>, estás logueado.
+    <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-danger ms-3">Cerrar sesión</a>
+</div>
+{% endif %}
+
 <div class="row text-center">
     <div class="col-md-4 mb-4">
         <div class="card shadow-sm h-100">

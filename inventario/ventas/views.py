@@ -7,15 +7,18 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 import json
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required, permission_required
 
 from .models import Venta, ItemVenta
 from .forms import VentaForm, ItemVentaFormSet
 from productos.models import Producto
 
-class VentaCreateView(CreateView):
+class VentaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Venta
     form_class = VentaForm
     template_name = 'venta/venta_form.html'
+    permission_required = 'ventas.add_venta'
 
     def get_context_data_custom(self, form, formset):
         productos = Producto.objects.filter(stock__gt=0)
@@ -51,7 +54,6 @@ class VentaCreateView(CreateView):
                     item = item_form.save(commit=False)
                     item.venta = venta
 
-                    # ✅ Validación: producto obligatorio
                     if not item.producto:
                         messages.error(request, "Falta seleccionar un producto en uno de los ítems.")
                         transaction.set_rollback(True)
@@ -81,18 +83,22 @@ class VentaCreateView(CreateView):
         return render(request, self.template_name, context)
 
 
-class VentaListView(ListView):
+class VentaListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Venta
     template_name = 'venta/venta_list.html'
     context_object_name = 'ventas'
+    permission_required = 'ventas.view_venta'
 
 
-class VentaDetailView(DetailView):
+class VentaDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Venta
     template_name = 'venta/venta_detail.html'
     context_object_name = 'venta'
+    permission_required = 'ventas.view_venta'
 
 
+@login_required
+@permission_required('ventas.view_venta', raise_exception=True)
 def generar_factura_pdf(request, venta_id):
     venta = Venta.objects.get(id=venta_id)
     items = venta.itemventa_set.all()

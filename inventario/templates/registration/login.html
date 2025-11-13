@@ -1,9 +1,29 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Iniciar sesión{% endblock %}
+{% block header %}Accedé al sistema{% endblock %}
+
 {% block content %}
-<h2>Iniciar sesión</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-primary">Ingresar</button>
-</form>
+<div class="row justify-content-center mt-5">
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h4 class="mb-4 text-center">Iniciar sesión</h4>
+
+        {% if form.errors %}
+          <div class="alert alert-danger">
+            <strong>Error:</strong> Usuario o contraseña incorrectos.
+          </div>
+        {% endif %}
+
+        <form method="post">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

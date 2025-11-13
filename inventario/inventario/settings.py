@@ -118,7 +118,8 @@ ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
 LOGIN_URL = '/accounts/login/'
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_LOGIN_METHODS = {'username'}  # ✅ nuevo formato
-ACCOUNT_SIGNUP_FIELDS = ['email', 'username*', 'password1*', 'password2*']  # ✅ nuevo formato
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_SIGNUP_REDIRECT_URL = '/accounts/login/'
-ACCOUNT_SIGNUP_ALLOWED = False  # 🚫 Deshabilita el registro manual
+ACCOUNT_SIGNUP_ALLOWED = False 

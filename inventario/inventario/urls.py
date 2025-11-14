@@ -16,6 +16,8 @@ urlpatterns = [
     path('accounts/logout/', logout_view, name='logout'),  # 👈 usamos la vista personalizada
     path('accounts/', include('allauth.urls')),
     path('factura/<int:venta_id>/pdf/', generar_factura_pdf, name='factura_pdf'),
+ 
+
 ]
 
 if settings.DEBUG:

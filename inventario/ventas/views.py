@@ -3,19 +3,19 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
 from django.contrib import messages
 from django.core.serializers.json import DjangoJSONEncoder
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from django.db.models import Sum
 import json
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.mail import EmailMessage
-from django.utils.html import strip_tags
 from django.contrib.auth import logout
 
 from .models import Venta, ItemVenta
 from .forms import VentaForm, ItemVentaFormSet
 from productos.models import Producto
+
 
 class VentaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Venta
@@ -104,7 +104,7 @@ class VentaDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
 @permission_required('ventas.view_venta', raise_exception=True)
 def generar_factura_pdf(request, venta_id):
     venta = get_object_or_404(Venta, id=venta_id)
-    items = venta.items.all()  # ✅ corregido
+    items = venta.items.all()
 
     template = get_template('venta/factura_pdf.html')
     html = template.render({'venta': venta, 'items': items})
@@ -116,37 +116,22 @@ def generar_factura_pdf(request, venta_id):
 
 @login_required
 @permission_required('ventas.view_venta', raise_exception=True)
-def enviar_factura_email(request, venta_id):
-    venta = get_object_or_404(Venta, id=venta_id)
-    items = venta.items.all()  # ✅ corregido
-
-    template = get_template('venta/factura_pdf.html')
-    html = template.render({'venta': venta, 'items': items})
-    pdf_response = HttpResponse(content_type='application/pdf')
-    pisa.CreatePDF(html, dest=pdf_response)
-
-    asunto = f"Factura de compra - {venta.codigo}"
-    cuerpo_html = f"""
-        <p>Hola <strong>{venta.cliente.nombre}</strong>,</p>
-        <p>Adjuntamos la factura correspondiente a tu compra realizada el {venta.fecha.strftime('%d/%m/%Y')}.</p>
-        <p>Gracias por tu preferencia.</p>
-    """
-    email = EmailMessage(
-        subject=asunto,
-        body=strip_tags(cuerpo_html),
-        from_email='facturacion@vinoteca.com',
-        to=[venta.cliente.email],
+def ventas_por_dia_json(request):
+    datos = (
+        Venta.objects
+        .values('fecha')
+        .annotate(total_dia=Sum('total'))
+        .order_by('fecha')
     )
-    email.attach(f"factura_{venta.codigo}.pdf", pdf_response.getvalue(), 'application/pdf')
-    email.content_subtype = "html"
+    fechas = [str(d['fecha']) for d in datos]
+    totales = [float(d['total_dia']) for d in datos]
+    return JsonResponse({'labels': fechas, 'data': totales})
 
-    try:
-        email.send()
-        messages.success(request, f"Factura enviada a {venta.cliente.email}.")
-    except Exception as e:
-        messages.error(request, f"No se pudo enviar el correo: {e}")
 
-    return redirect('ventas:venta_detail', pk=venta_id)
+@login_required
+@permission_required('ventas.view_venta', raise_exception=True)
+def ventas_por_dia(request):
+    return render(request, 'venta/ventas_por_dia.html')
 
 
 @login_required

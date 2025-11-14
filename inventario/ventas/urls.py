@@ -4,7 +4,8 @@ from .views import (
     VentaListView,
     VentaDetailView,
     generar_factura_pdf,
-    enviar_factura_email  # 👈 agregamos la vista que vamos a crear
+    ventas_por_dia_json,
+    ventas_por_dia,  # ✅ vista que renderiza el template
 )
 
 app_name = 'ventas'
@@ -14,5 +15,6 @@ urlpatterns = [
     path('nueva/', VentaCreateView.as_view(), name='venta_create'),
     path('<int:pk>/', VentaDetailView.as_view(), name='venta_detail'),
     path('factura/<int:venta_id>/pdf/', generar_factura_pdf, name='generar_factura_pdf'),
-    path('factura/<int:venta_id>/enviar/', enviar_factura_email, name='enviar_factura_email'),  # ✅ nueva ruta
+    path('grafico/ventas_por_dia/', ventas_por_dia_json, name='ventas_por_dia_json'),
+    path('estadisticas/ventas_por_dia/', ventas_por_dia, name='ventas_por_dia'), 
 ]

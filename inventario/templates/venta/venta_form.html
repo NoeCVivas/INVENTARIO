@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Registrar Venta{% endblock %}
 {% block header %}<i class="fas fa-receipt"></i> Registrar Nueva Venta{% endblock %}
@@ -16,7 +17,49 @@
   {% csrf_token %}
   <div class="card mb-4">
     <div class="card-body" style="background-color: #F8F6F3;">
-      {{ form.as_p }}
+      <!-- Medio de pago con id controlado -->
+      <div class="form-group">
+        <label for="id_medio_pago">Medio de pago</label>
+        {{ form.medio_pago }}
+      </div>
+
+      <!-- Resto del formulario -->
+      {% for field in form %}
+        {% if field.name != 'medio_pago' %}
+          <div class="form-group">
+            {{ field.label_tag }} {{ field }}
+            {% if field.errors %}
+              <div class="text-danger">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Campos de tarjeta -->
+      <div id="datos-tarjeta" style="display: none;" class="mt-4">
+        <div class="form-group">
+          <label for="numero_tarjeta">Número de tarjeta</label>
+          <input type="text" class="form-control" id="numero_tarjeta" name="numero_tarjeta"
+                 pattern="\d{16}" maxlength="16" placeholder="XXXXXXXXXXXXXXXX"
+                 title="Ingresá los 16 dígitos sin espacios">
+        </div>
+        <div class="form-group">
+          <label for="vencimiento_tarjeta">Fecha de vencimiento</label>
+          <input type="month" class="form-control" id="vencimiento_tarjeta" name="vencimiento_tarjeta">
+        </div>
+        <div class="form-group">
+          <label for="codigo_seguridad">Código de seguridad (CVV)</label>
+          <input type="text" class="form-control" id="codigo_seguridad" name="codigo_seguridad"
+                 pattern="\d{3,4}" maxlength="4" placeholder="CVV"
+                 title="Ingresá 3 o 4 dígitos">
+        </div>
+      </div>
+
+      <!-- 📱 Imagen QR -->
+      <div id="qr-pago" style="display: none;" class="mt-4 text-center">
+        <img src="{% static 'img/qr_pago.png' %}" alt="Código QR para pago" style="max-width: 200px;">
+        <p class="mt-2">Escaneá el código para completar el pago.</p>
+      </div>
     </div>
   </div>
 
@@ -148,6 +191,33 @@
       tabla.appendChild(nuevaFila);
       inicializarEventosFila(nuevaFila);
     });
+
+    // Mostrar campos de tarjeta o QR según medio de pago
+    const medioPago = document.getElementById('id_medio_pago');
+    const datosTarjeta = document.getElementById('datos-tarjeta');
+    const qrPago = document.getElementById('qr-pago');
+
+    function toggleMedioPago() {
+      const valor = medioPago.value.toLowerCase();
+      datosTarjeta.style.display = 'none';
+      qrPago.style.display = 'none';
+
+      if (
+        valor.includes('tarjeta') ||
+        valor.includes('crédito') ||
+        valor.includes('debito') ||
+        valor.includes('débito')
+      ) {
+        datosTarjeta.style.display = 'block';
+      } else if (valor.includes('qr')) {
+        qrPago.style.display = 'block';
+      }
+    }
+
+    if (medioPago) {
+      medioPago.addEventListener('change', toggleMedioPago);
+      toggleMedioPago(); // Ejecutar al cargar
+    }
   });
 </script>
 {% endblock %}

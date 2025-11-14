@@ -45,6 +45,19 @@ class VentaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         formset = ItemVentaFormSet(request.POST)
 
         if form.is_valid() and formset.is_valid():
+            medio_pago = form.cleaned_data['medio_pago'].lower()
+
+            # ✅ Validación de campos de tarjeta si se elige tarjeta
+            if 'tarjeta' in medio_pago:
+                numero = request.POST.get('numero_tarjeta', '').strip()
+                vencimiento = request.POST.get('vencimiento_tarjeta', '').strip()
+                cvv = request.POST.get('codigo_seguridad', '').strip()
+
+                if not numero or not vencimiento or not cvv:
+                    messages.error(request, "Completá todos los datos de la tarjeta.")
+                    context = self.get_context_data_custom(form, formset)
+                    return render(request, self.template_name, context)
+
             with transaction.atomic():
                 venta = form.save(commit=False)
                 venta.codigo = f"V-{Venta.objects.count() + 1:04d}"

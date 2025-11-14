@@ -26,10 +26,11 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'django.contrib.sites', 
+    'django.contrib.sites',
+    'django_filters',
 ]
 
-SITE_ID = 1  
+SITE_ID = 1
 
 
 MIDDLEWARE = [
@@ -37,11 +38,13 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    # allauth requiere esta middleware; debe estar presente en MIDDLEWARE
+    "allauth.account.middleware.AccountMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware", 
 ]
+
 ROOT_URLCONF = 'inventario.urls'
 
 
@@ -53,7 +56,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request', 
+                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -117,9 +120,19 @@ LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
 LOGIN_URL = '/accounts/login/'
 
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_AUTHENTICATION_METHOD = 'username'
-ACCOUNT_USERNAME_REQUIRED = True
+# allauth: configuración actualizada para evitar warnings de deprecación
+# Elegí el/los método(s) de login: 'username', 'email' o ambos
+ACCOUNT_LOGIN_METHODS = {"username"}          # si querés permitir email también: {"username", "email"}
+
+# Campos que se piden en el signup; el asterisco marca obligatorios según la convención de allauth
+ACCOUNT_SIGNUP_FIELDS = ["email", "username*", "password1*", "password2*"]
+
+# Verificación / comportamiento
+ACCOUNT_EMAIL_VERIFICATION = 'none'          # 'mandatory', 'optional' o 'none'
 ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_USERNAME_REQUIRED = True
+
 ACCOUNT_SIGNUP_REDIRECT_URL = '/accounts/login/'
 
+# django-filter: configuración opcional (no requerida para funcionar)
+# REST_FRAMEWORK / FILTER_BACKENDS no aplican si no usás DRF

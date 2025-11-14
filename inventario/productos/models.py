@@ -21,7 +21,7 @@ class Producto(models.Model):
     nombre = models.CharField("Nombre", max_length=50)
     descripcion = models.CharField("Descripción", max_length=200)
     precio = models.DecimalField("Precio", max_digits=10, decimal_places=2)
-    stock = models.PositiveIntegerField(default=0)
+    stock = models.PositiveIntegerField("Stock", default=0)
     stock_minimo = models.IntegerField("Stock Mínimo", default=5)
     sku = models.CharField(
         "SKU",
@@ -42,9 +42,9 @@ class Producto(models.Model):
     fecha_actualizacion = models.DateTimeField("Fecha de actualización", auto_now=True)
 
     class Meta:
-        verbose_name = 'Producto'
-        verbose_name_plural = 'Productos'
-        ordering = ['nombre']
+        verbose_name = "Producto"
+        verbose_name_plural = "Productos"
+        ordering = ["nombre"]
 
     def __str__(self):
         return self.nombre
@@ -69,6 +69,7 @@ class Producto(models.Model):
     def necesita_reposicion(self):
         return self.stock < self.stock_minimo
 
+
 class MovimientoStock(models.Model):
     TIPO_CHOICES = [
         ("entrada", "Entrada"),
@@ -76,16 +77,21 @@ class MovimientoStock(models.Model):
         ("ajuste", "Ajuste"),
     ]
 
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='movimientos')
+    producto = models.ForeignKey(
+        Producto,
+        on_delete=models.CASCADE,
+        related_name="movimientos",
+        verbose_name="Producto"
+    )
     tipo = models.CharField("Tipo", max_length=50, choices=TIPO_CHOICES)
-    cantidad = models.IntegerField()
+    cantidad = models.IntegerField("Cantidad")
     motivo = models.CharField("Motivo", max_length=200, blank=True, null=True)
     fecha = models.DateTimeField("Fecha", default=timezone.now)
     usuario = models.CharField("Usuario", max_length=50)
 
     class Meta:
-        verbose_name = 'Movimiento de Stock'
-        verbose_name_plural = 'Movimientos de Stock'
+        verbose_name = "Movimiento de Stock"
+        verbose_name_plural = "Movimientos de Stock"
         ordering = ["-fecha"]
 
     def __str__(self):

@@ -3,62 +3,70 @@
 {% load crispy_forms_tags %}
 
 {% block title %}Inicio{% endblock %}
-{% block header %}Bienvenida al Sistema de Inventario{% endblock %}
+{% block header %}<i class="fas fa-wine-bottle"></i> Vinoteca Alfonsina{% endblock %}
 
 {% block content %}
-
 {% if not user.is_authenticated %}
 <div class="row justify-content-center mb-5">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h4 class="mb-3">Iniciar sesión</h4>
-                <form method="post" action="{% url 'login' %}">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    <button type="submit" class="btn btn-primary">Ingresar</button>
-                </form>
-            </div>
-        </div>
+  <div class="col-md-6">
+    <div class="card shadow-sm border-0" style="border-top: 5px solid #4B1E1E;">
+      <div class="card-body" style="background-color: #F8F6F3;">
+        <h4 class="mb-3 text-center" style="font-family: Georgia, serif;">
+          <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+        </h4>
+        <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <button type="submit" class="btn btn-vinoteca w-100">
+            <i class="fas fa-door-open"></i> Ingresar
+          </button>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 {% else %}
-<div class="alert alert-success text-center">
-    Hola <strong>{{ user.username }}</strong>, estás logueado.
-    <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-danger ms-3">Cerrar sesión</a>
+<div class="alert alert-success text-center shadow-sm" style="font-family: Georgia, serif;">
+  <i class="fas fa-smile-beam"></i> Hola <strong>{{ user.username }}</strong>, estás logueado.
+  <form method="post" action="{% url 'logout' %}" class="d-inline ms-3">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-sm btn-outline-danger">
+      <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+    </button>
+  </form>
 </div>
 {% endif %}
 
 <div class="row text-center">
-    <div class="col-md-4 mb-4">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <i class="fas fa-box fa-3x text-primary mb-3"></i>
-                <h5 class="card-title">Productos</h5>
-                <p class="card-text">Gestioná el stock, precios e imágenes de tus productos.</p>
-                <a href="{% url 'productos:producto_list' %}" class="btn btn-outline-primary">Ver productos</a>
-            </div>
-        </div>
+  <div class="col-md-4 mb-4">
+    <div class="card shadow-sm h-100 border-0" style="border-top: 5px solid #4B1E1E;">
+      <div class="card-body" style="background-color: #F8F6F3;">
+        <i class="fas fa-box fa-3x text-primary mb-3"></i>
+        <h5 class="card-title">Productos</h5>
+        <p class="card-text">Gestioná el stock, precios e imágenes de tus productos.</p>
+        <a href="{% url 'productos:producto_list' %}" class="btn btn-outline-primary">Ver productos</a>
+      </div>
     </div>
-    <div class="col-md-4 mb-4">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <i class="fas fa-users fa-3x text-success mb-3"></i>
-                <h5 class="card-title">Clientes</h5>
-                <p class="card-text">Consultá, editá o agregá nuevos clientes al sistema.</p>
-                <a href="{% url 'clientes:cliente_list' %}" class="btn btn-outline-success">Ver clientes</a>
-            </div>
-        </div>
+  </div>
+  <div class="col-md-4 mb-4">
+    <div class="card shadow-sm h-100 border-0" style="border-top: 5px solid #4B1E1E;">
+      <div class="card-body" style="background-color: #F8F6F3;">
+        <i class="fas fa-users fa-3x text-success mb-3"></i>
+        <h5 class="card-title">Clientes</h5>
+        <p class="card-text">Consultá, editá o agregá nuevos clientes al sistema.</p>
+        <a href="{% url 'clientes:cliente_list' %}" class="btn btn-outline-success">Ver clientes</a>
+      </div>
     </div>
-    <div class="col-md-4 mb-4">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <i class="fas fa-shopping-cart fa-3x text-warning mb-3"></i>
-                <h5 class="card-title">Ventas</h5>
-                <p class="card-text">Registrá nuevas ventas y consultá el historial.</p>
-                <a href="{% url 'ventas:venta_list' %}" class="btn btn-outline-warning">Ver ventas</a>
-            </div>
-        </div>
+  </div>
+  <div class="col-md-4 mb-4">
+    <div class="card shadow-sm h-100 border-0" style="border-top: 5px solid #4B1E1E;">
+      <div class="card-body" style="background-color: #F8F6F3;">
+        <i class="fas fa-shopping-cart fa-3x text-warning mb-3"></i>
+        <h5 class="card-title">Ventas</h5>
+        <p class="card-text">Registrá nuevas ventas y consultá el historial.</p>
+        <a href="{% url 'ventas:venta_list' %}" class="btn btn-outline-warning">Ver ventas</a>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

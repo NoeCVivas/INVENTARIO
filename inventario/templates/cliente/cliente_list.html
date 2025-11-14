@@ -3,14 +3,17 @@
 {% block header %}Listado de Clientes{% endblock %}
 
 {% block extra_buttons %}
-<a href="{% url 'clientes:cliente_create' %}" class="btn btn-success">
-  <i class="fas fa-plus-circle"></i> Nuevo Cliente
-</a>
+<div class="d-flex gap-2">
+  <a href="{% url 'clientes:cliente_create' %}" class="btn btn-vinoteca">
+    <i class="fas fa-plus-circle"></i> Nuevo Cliente
+  </a>
+ 
+</div>
 {% endblock %}
 
 {% block content %}
-<table class="table table-striped table-hover">
-  <thead>
+<table class="table table-bordered table-hover" style="background-color: #fff;">
+  <thead style="background-color: #4B1E1E; color: #F8F6F3;">
     <tr>
       <th>Nombre</th>
       <th>Apellido</th>
@@ -29,25 +32,29 @@
       <td>{{ cliente.email }}</td>
       <td>{{ cliente.telefono }}</td>
       <td>
-        <a href="{% url 'clientes:cliente_detail' cliente.pk %}" class="btn btn-sm btn-info">
-          <i class="fas fa-search"></i>
-        </a>
-        <a href="{% url 'clientes:cliente_update' cliente.pk %}" class="btn btn-sm btn-primary">
-          <i class="fas fa-edit"></i>
-        </a>
-        <a href="{% url 'clientes:cliente_delete' cliente.pk %}" class="btn btn-sm btn-danger">
-          <i class="fas fa-trash-alt"></i>
-        </a>
+        <div class="btn-group btn-group-sm">
+          <a href="{% url 'clientes:cliente_detail' cliente.pk %}" class="btn btn-outline-info" title="Ver">
+            <i class="fas fa-search"></i>
+          </a>
+          <a href="{% url 'clientes:cliente_update' cliente.pk %}" class="btn btn-outline-primary" title="Editar">
+            <i class="fas fa-edit"></i>
+          </a>
+          <a href="{% url 'clientes:cliente_delete' cliente.pk %}" class="btn btn-outline-danger" title="Eliminar">
+            <i class="fas fa-trash-alt"></i>
+          </a>
+        </div>
       </td>
     </tr>
     {% empty %}
     <tr>
-      <td colspan="6" class="text-center">No hay clientes registrados.</td>
+      <td colspan="6" class="text-center">
+        <i class="fas fa-info-circle"></i> No hay clientes registrados.
+        <a href="{% url 'clientes:cliente_create' %}" class="btn btn-vinoteca btn-sm ml-2">Agregar primer cliente</a>
+      </td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
- 
-{% include 'paginator.html' with page_obj=page_obj %}
 
- {% endblock %}
+{% include 'paginator.html' with page_obj=page_obj %}
+{% endblock %}

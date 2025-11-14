@@ -1,34 +1,35 @@
 <nav>
-    <ul class="pagination justify-content-center bg-light p-2 rounded">
-        {% if page_obj.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
-                    &laquo;Anterior
-                </a>
-            </li>
-        
-        {% endif %}
-        
-        {% for num in page_obj.paginator.page_range %}
-            {% if num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                {% if num == page_obj.number %}    
-                    <li class="page-item active">
-                        <span class="page-link">{{ num }} (Actual)</span>
-                    </li>
-                {% else %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                    </li>
-                {% endif %}
-            {% endif %}
-        {% endfor %}
+  <ul class="pagination justify-content-center p-2 rounded shadow-sm" style="background-color: #F1E8E6; font-family: Georgia, serif;">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" style="color: #4B1E1E;">
+          &laquo; Anterior
+        </a>
+      </li>
+    {% endif %}
 
-        {% if page_obj.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
-                    Siguiente &raquo;
-                </a>
-            </li>
+    {% for num in page_obj.paginator.page_range %}
+      {% if num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        {% if num == page_obj.number %}
+          <li class="page-item active">
+            <span class="page-link" style="background-color: #C9A66B; border-color: #C9A66B; color: #4B1E1E;">
+              {{ num }} <small>(Actual)</small>
+            </span>
+          </li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ num }}" style="color: #4B1E1E;">{{ num }}</a>
+          </li>
         {% endif %}
-    </ul>
-</nav> 
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}" style="color: #4B1E1E;">
+          Siguiente &raquo;
+        </a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>

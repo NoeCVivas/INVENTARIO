@@ -1,15 +1,29 @@
 {% extends 'base.html' %}
 
-{% block content %}
-<h2>Registrar Nueva Venta</h2>
+{% block title %}Registrar Venta{% endblock %}
+{% block header %}<i class="fas fa-receipt"></i> Registrar Nueva Venta{% endblock %}
 
+{% block extra_buttons %}
+<div class="d-flex gap-2">
+  <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+    <i class="fas fa-home"></i> Menú Inicial
+  </a>
+</div>
+{% endblock %}
+
+{% block content %}
 <form method="post">
   {% csrf_token %}
-  {{ form.as_p }}
+  <div class="card mb-4">
+    <div class="card-body" style="background-color: #F8F6F3;">
+      {{ form.as_p }}
+    </div>
+  </div>
+
   {{ formset.management_form }}
 
-  <table class="table table-bordered" id="tabla-items">
-    <thead class="thead-dark">
+  <table class="table table-bordered table-hover" id="tabla-items" style="background-color: #fff;">
+    <thead style="background-color: #4B1E1E; color: #F8F6F3;">
       <tr>
         <th>Producto</th>
         <th>Cantidad</th>
@@ -25,22 +39,25 @@
         <td>{{ form.cantidad }}</td>
         <td>{{ form.precio_unitario }}</td>
         <td class="subtotal">$0.00</td>
-        <td><button type="button" class="btn btn-sm btn-danger eliminar-fila">✖</button></td>
+        <td><button type="button" class="btn btn-sm btn-outline-danger eliminar-fila">✖</button></td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 
-  <button type="button" class="btn btn-outline-success" id="agregar-fila">➕ Agregar producto</button>
-
-  <div class="mt-4">
-    <div class="d-flex justify-content-between">
-      <p><strong>Total:</strong> <span id="total-venta">$0.00</span></p>
-      <p><strong>Ítems:</strong> <span id="cantidad-items">0</span></p>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <button type="button" class="btn btn-outline-success" id="agregar-fila">
+      <i class="fas fa-plus-circle"></i> Agregar producto
+    </button>
+    <div>
+      <strong>Total:</strong> <span id="total-venta">$0.00</span> |
+      <strong>Ítems:</strong> <span id="cantidad-items">0</span>
     </div>
   </div>
 
-  <button type="submit" class="btn btn-primary mt-3">Registrar venta</button>
+  <button type="submit" class="btn btn-vinoteca w-100">
+    <i class="fas fa-check-circle"></i> Registrar venta
+  </button>
 </form>
 
 <script>
@@ -68,11 +85,8 @@
       if (cantidad > 0) cantidadItems += 1;
     });
 
-    const totalVenta = document.getElementById('total-venta');
-    const cantidadSpan = document.getElementById('cantidad-items');
-
-    if (totalVenta) totalVenta.textContent = `$${total.toFixed(2)}`;
-    if (cantidadSpan) cantidadSpan.textContent = cantidadItems;
+    document.getElementById('total-venta').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('cantidad-items').textContent = cantidadItems;
   }
 
   function inicializarEventosFila(fila) {
@@ -85,8 +99,6 @@
         const productoId = this.value;
         const precio = precios[productoId];
         const stock = stocks[productoId];
-
-        console.log("Producto:", productoId, "Precio:", precio, "Stock:", stock);
 
         if (precio !== undefined) {
           precioInput.value = precio.toFixed(2);
@@ -123,8 +135,7 @@
     document.querySelectorAll('.item-venta').forEach(inicializarEventosFila);
     actualizarTotales();
 
-    const agregarBtn = document.getElementById('agregar-fila');
-    agregarBtn.addEventListener('click', function () {
+    document.getElementById('agregar-fila').addEventListener('click', function () {
       const tabla = document.getElementById('tabla-items').querySelector('tbody');
       const ultimaFila = tabla.querySelector('.item-venta:last-child');
       const nuevaFila = ultimaFila.cloneNode(true);

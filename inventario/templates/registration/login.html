@@ -7,9 +7,11 @@
 {% block content %}
 <div class="row justify-content-center mt-5">
   <div class="col-md-6">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h4 class="mb-4 text-center">Iniciar sesión</h4>
+    <div class="card border-0 shadow-sm" style="border-top: 5px solid #4B1E1E;">
+      <div class="card-body" style="background-color: #F8F6F3;">
+        <h4 class="mb-4 text-center" style="font-family: Georgia, serif;">
+          <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+        </h4>
 
         {% if form.errors %}
           <div class="alert alert-danger">
@@ -19,9 +21,32 @@
 
         <form method="post">
           {% csrf_token %}
-          {{ form|crispy }}
-          <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+          <div class="form-group mb-3">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            {% if form.username.errors %}
+              <div class="text-danger">{{ form.username.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="form-group mb-4">
+            {{ form.password.label_tag }}
+            {{ form.password }}
+            {% if form.password.errors %}
+              <div class="text-danger">{{ form.password.errors }}</div>
+            {% endif %}
+          </div>
+
+          <button type="submit" class="btn btn-vinoteca w-100">
+            <i class="fas fa-door-open"></i> Ingresar
+          </button>
         </form>
+
+        <div class="mt-3 text-center">
+          <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-home"></i> Volver al menú inicial
+          </a>
+        </div>
       </div>
     </div>
   </div>

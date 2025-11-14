@@ -7,7 +7,7 @@ SECRET_KEY = 'django-insecure-g6cdfwd0hzg5xv_oin*$be^ce-++^h_elh&19j&$&k+j5mkcsf
 DEBUG = True
 ALLOWED_HOSTS = []
 
-# Aplicaciones instaladas
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -26,12 +26,12 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'django.contrib.sites',  # requerido por allauth
+    'django.contrib.sites', 
 ]
 
-SITE_ID = 1  # requerido por django-allauth
+SITE_ID = 1  
 
-# Middlewares
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -44,7 +44,7 @@ MIDDLEWARE = [
 ]
 ROOT_URLCONF = 'inventario.urls'
 
-# Templates
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -63,7 +63,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'inventario.wsgi.application'
 
-# Base de datos
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -71,7 +71,7 @@ DATABASES = {
     }
 }
 
-# Validación de contraseñas
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -79,27 +79,27 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internacionalización
+
 LANGUAGE_CODE = 'es-ar'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Archivos estáticos y multimedia
+
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Campo por defecto para claves primarias
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Configuración de crispy-forms
+
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap4'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-# Configuración de bootstrap4
+
 BOOTSTRAP4 = {
     'include_jquery': True,
     'set_placeholder': False,
@@ -122,4 +122,4 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_SIGNUP_REDIRECT_URL = '/accounts/login/'
-ACCOUNT_SIGNUP_ALLOWED = False 
+

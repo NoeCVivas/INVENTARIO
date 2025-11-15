@@ -6,7 +6,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
-from django.db.models import Sum
+from django.db.models import Sum, F
 import json
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required, permission_required
@@ -14,7 +14,7 @@ from django.contrib.auth import logout
 
 from .models import Venta, ItemVenta
 from .forms import VentaForm, ItemVentaFormSet
-from productos.models import Producto
+from productos.models import Producto, MovimientoStock
 
 
 class VentaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -36,18 +36,19 @@ class VentaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
-        formset = ItemVentaFormSet()
+        formset = ItemVentaFormSet(prefix='form')
         context = self.get_context_data_custom(form, formset)
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
-        formset = ItemVentaFormSet(request.POST)
+        formset = ItemVentaFormSet(request.POST, prefix='form')
 
         if form.is_valid() and formset.is_valid():
+
             medio_pago = form.cleaned_data['medio_pago'].lower()
 
-            # ✅ Validación de campos de tarjeta si se elige crédito o débito
+            # ► Validación extra de tarjeta
             if medio_pago in ["credito", "debito"]:
                 numero = request.POST.get('numero_tarjeta', '').strip()
                 vencimiento = request.POST.get('fecha_vencimiento', '').strip()
@@ -62,42 +63,61 @@ class VentaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
                 venta = form.save(commit=False)
                 venta.codigo = f"V-{Venta.objects.count() + 1:04d}"
                 venta.total = 0
-                venta.medio_pago = form.cleaned_data['medio_pago']
-                venta.fecha = form.cleaned_data['fecha']
                 venta.save()
 
-                for item_form in formset:
+                # ► Procesar ítems correctamente
+                for item_form in formset.forms:
+
                     if not item_form.cleaned_data:
-                        continue  # Ignora filas vacías
+                        continue
 
-                    item = item_form.save(commit=False)
-                    item.venta = venta
+                    producto = item_form.cleaned_data.get("producto")
+                    cantidad = item_form.cleaned_data.get("cantidad")
 
-                    if not item.producto:
-                        messages.error(request, "Falta seleccionar un producto en uno de los ítems.")
-                        transaction.set_rollback(True)
-                        context = self.get_context_data_custom(form, formset)
-                        return render(request, self.template_name, context)
+                    if not producto or not cantidad:
+                        continue
 
-                    item.precio_unitario = item.producto.precio
-                    item.subtotal = item.precio_unitario * item.cantidad
+                    # Bloquear el producto para evitar condiciones de carrera
+                    producto_bloqueado = Producto.objects.select_for_update().get(id=producto.id)
 
-                    producto = item.producto
-                    if producto.stock < item.cantidad:
-                        messages.error(request, f"Stock insuficiente para {producto.nombre}")
-                        transaction.set_rollback(True)
-                        context = self.get_context_data_custom(form, formset)
-                        return render(request, self.template_name, context)
+                    # Validación de stock
+                    if producto_bloqueado.stock < cantidad:
+                        messages.error(request, f"Stock insuficiente para {producto_bloqueado.nombre}")
+                        raise transaction.TransactionManagementError()
 
-                    producto.stock -= item.cantidad
-                    producto.save()
-                    item.save()
-                    venta.total += item.subtotal
+                    precio = producto_bloqueado.precio
+                    subtotal = precio * cantidad
+
+                    # Crear item
+                    ItemVenta.objects.create(
+                        venta=venta,
+                        producto=producto_bloqueado,
+                        cantidad=cantidad,
+                        precio_unitario=precio,
+                        subtotal=subtotal
+                    )
+
+                    # Actualizar stock seguro con F()
+                    Producto.objects.filter(id=producto_bloqueado.id).update(stock=F('stock') - cantidad)
+
+                    # Registrar movimiento de salida
+                    MovimientoStock.objects.create(
+                        producto=producto_bloqueado,
+                        tipo='salida',
+                        cantidad=cantidad,
+                        motivo=f"Venta {venta.codigo}",
+                        usuario=request.user.username
+                    )
+
+                    # Sumar al total
+                    venta.total += subtotal
 
                 venta.save()
+
                 messages.success(request, "Venta registrada correctamente.")
                 return redirect('ventas:venta_detail', pk=venta.pk)
 
+        # Si algo falla
         context = self.get_context_data_custom(form, formset)
         return render(request, self.template_name, context)
 

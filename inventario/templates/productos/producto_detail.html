@@ -58,9 +58,9 @@
     </thead>
     <tbody>
       {% for movimiento in movimientos %}
-      <tr>
+      <tr class="{% if movimiento.tipo == 'salida' %}table-danger{% else %}table-success{% endif %}">
         <td>{{ movimiento.fecha|date:"d/m/Y H:i" }}</td>
-        <td>{{ movimiento.tipo }}</td>
+        <td>{{ movimiento.get_tipo_display }}</td>
         <td>{{ movimiento.cantidad }}</td>
         <td>{{ movimiento.motivo }}</td>
         <td>{{ movimiento.usuario }}</td>

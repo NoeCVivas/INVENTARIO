@@ -7,7 +7,6 @@ class VentaForm(forms.ModelForm):
         model = Venta
         fields = ['cliente', 'fecha', 'medio_pago']
 
-    # Campos adicionales para tarjeta
     numero_tarjeta = forms.CharField(
         label="Número de tarjeta",
         max_length=16,
@@ -31,7 +30,6 @@ class VentaForm(forms.ModelForm):
         cleaned_data = super().clean()
         medio_pago = cleaned_data.get("medio_pago")
 
-        # Validación solo si el medio de pago es tarjeta
         if medio_pago in ["credito", "debito"]:
             if not cleaned_data.get("numero_tarjeta"):
                 self.add_error("numero_tarjeta", "Debe ingresar el número de tarjeta.")
@@ -42,8 +40,6 @@ class VentaForm(forms.ModelForm):
 
         return cleaned_data
 
-
-# 👇 Form personalizado para ItemVenta
 class ItemVentaForm(forms.ModelForm):
     class Meta:
         model = ItemVenta
@@ -51,11 +47,10 @@ class ItemVentaForm(forms.ModelForm):
         widgets = {
             'producto': forms.Select(attrs={'class': 'producto'}),
             'cantidad': forms.NumberInput(attrs={'class': 'cantidad'}),
-            'precio_unitario': forms.TextInput(attrs={'class': 'precio-unitario'}),
-            'subtotal': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'precio_unitario': forms.TextInput(attrs={'class': 'precio-unitario', 'readonly': 'readonly'}),
+            'subtotal': forms.TextInput(attrs={'class': 'subtotal', 'readonly': 'readonly'}),
         }
 
-# 👇 Formset usando el form personalizado
 ItemVentaFormSet = inlineformset_factory(
     Venta,
     ItemVenta,

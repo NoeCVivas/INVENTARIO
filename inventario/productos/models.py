@@ -95,4 +95,4 @@ class MovimientoStock(models.Model):
         ordering = ["-fecha"]
 
     def __str__(self):
-        return f"{self.producto.nombre} - {self.tipo} - {self.cantidad}"
+        return f"{self.producto.nombre} - {self.get_tipo_display()} - {self.cantidad}"

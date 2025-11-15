@@ -5,7 +5,7 @@ from .views import (
     VentaDetailView,
     generar_factura_pdf,
     ventas_por_dia_json,
-    ventas_por_dia,  # ✅ vista que renderiza el template
+    ventas_por_dia,
 )
 
 app_name = 'ventas'
@@ -16,5 +16,5 @@ urlpatterns = [
     path('<int:pk>/', VentaDetailView.as_view(), name='venta_detail'),
     path('factura/<int:venta_id>/pdf/', generar_factura_pdf, name='generar_factura_pdf'),
     path('grafico/ventas_por_dia/', ventas_por_dia_json, name='ventas_por_dia_json'),
-    path('estadisticas/ventas_por_dia/', ventas_por_dia, name='ventas_por_dia'), 
+    path('estadisticas/ventas_por_dia/', ventas_por_dia, name='ventas_por_dia'),
 ]

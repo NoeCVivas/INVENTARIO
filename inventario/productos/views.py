@@ -135,7 +135,7 @@ class AjusteStockView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
 
     def form_valid(self, form):
         producto = get_object_or_404(Producto, pk=self.kwargs['pk'])
-        nueva_cantidad = form.cleaned_data['nueva_cantidad']
+        nueva_cantidad = form.cleaned_data['cantidad']
         motivo = form.cleaned_data['motivo'] or 'Ajuste de stock'
         diferencia = nueva_cantidad - producto.stock
 

@@ -6,7 +6,7 @@ from productos.models import Producto
 class Venta(models.Model):
     codigo = models.CharField(max_length=20, unique=True)
     cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT)
-    fecha = models.DateField(default=date.today)  # ✅ editable con calendario
+    fecha = models.DateField(default=date.today)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     medio_pago = models.CharField(
         max_length=20,
@@ -16,7 +16,7 @@ class Venta(models.Model):
             ('debito', 'Tarjeta de Débito'),
             ('qr', 'QR'),
         ],
-        default='efectivo',  # ✅ evita errores en migración
+        default='efectivo',
     )
 
     def __str__(self):
@@ -26,8 +26,8 @@ class ItemVenta(models.Model):
     venta = models.ForeignKey(Venta, related_name='items', on_delete=models.CASCADE)
     producto = models.ForeignKey(Producto, on_delete=models.PROTECT)
     cantidad = models.PositiveIntegerField()
-    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     def __str__(self):
         return f"{self.producto.nombre} x {self.cantidad}"

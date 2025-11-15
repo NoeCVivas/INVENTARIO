@@ -3,12 +3,11 @@
 
 {% block title %}Registrar Venta{% endblock %}
 {% block header %}<i class="fas fa-receipt"></i> Registrar Nueva Venta{% endblock %}
-
 {% block extra_buttons %}{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-center">
-  <div class="card shadow-sm mb-4" style="width: 100%; max-width: 900px; background-color: #F8F6F3;">
+  <div class="card shadow-sm mb-4" style="width: 100%; max-width: 1000px; background-color: #F8F6F3;">
     <div class="card-body">
       <form method="post">
         {% csrf_token %}
@@ -25,7 +24,7 @@
           </div>
         </div>
 
-        <!-- Fecha separada -->
+        <!-- Fecha -->
         <div class="row mb-4">
           <div class="col-md-4">
             <label for="id_fecha"><i class="fas fa-calendar-alt"></i> Fecha</label>
@@ -33,7 +32,7 @@
           </div>
         </div>
 
-        <!-- Campos de tarjeta alineados -->
+        <!-- Campos de tarjeta -->
         <div id="datos-tarjeta" style="display: none;" class="mt-4">
           <div class="row">
             <div class="col-md-4">
@@ -63,15 +62,33 @@
 
         {{ formset.management_form }}
 
+        <!-- TEMPLATE OCULTO -->
+        <template id="fila-template">
+          <tr class="item-venta">
+            <td>{{ formset.empty_form.producto }}</td>
+            <td>{{ formset.empty_form.cantidad }}</td>
+            <td>{{ formset.empty_form.precio_unitario }}</td>
+            <td>{{ formset.empty_form.subtotal }}</td>
+            <td>
+              {{ formset.empty_form.DELETE }}
+              <button type="button" class="btn btn-sm btn-outline-danger eliminar-fila">✖</button>
+            </td>
+            {% for hidden in formset.empty_form.hidden_fields %}
+              {{ hidden }}
+            {% endfor %}
+          </tr>
+        </template>
+
+        <!-- TABLA -->
         <div class="table-responsive mt-4">
           <table class="table table-bordered table-hover" id="tabla-items" style="background-color: #fff;">
             <thead style="background-color: #4B1E1E; color: #F8F6F3;">
               <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio Unitario</th>
-                <th>Subtotal</th>
-                <th>Eliminar</th>
+                <th style="width: 35%;">Producto</th>
+                <th style="width: 15%;">Cantidad</th>
+                <th style="width: 20%;">Precio Unitario</th>
+                <th style="width: 20%;">Subtotal</th>
+                <th style="width: 10%;">Eliminar</th>
               </tr>
             </thead>
             <tbody>
@@ -80,8 +97,14 @@
                 <td>{{ form.producto }}</td>
                 <td>{{ form.cantidad }}</td>
                 <td>{{ form.precio_unitario }}</td>
-                <td class="subtotal">$0.00</td>
-                <td><button type="button" class="btn btn-sm btn-outline-danger eliminar-fila">✖</button></td>
+                <td>{{ form.subtotal }}</td>
+                <td>
+                  {{ form.DELETE }}
+                  <button type="button" class="btn btn-sm btn-outline-danger eliminar-fila">✖</button>
+                </td>
+                {% for hidden in form.hidden_fields %}
+                  {{ hidden }}
+                {% endfor %}
               </tr>
               {% endfor %}
             </tbody>
@@ -109,6 +132,8 @@
 <script>
   const precios = {{ precios_json|default:"{}"|safe }};
   const stocks = {{ stocks_json|default:"{}"|safe }};
+  const totalFormsInput = document.querySelector('input[name="form-TOTAL_FORMS"]');
+  const template = document.getElementById('fila-template');
 
   function actualizarTotales() {
     let total = 0;
@@ -123,12 +148,9 @@
       const precio = parseFloat(precioInput?.value || 0);
       const subtotal = cantidad * precio;
 
-      if (subtotalField) {
-        subtotalField.textContent = `$${subtotal.toFixed(2)}`;
-      }
-
+      if (subtotalField) subtotalField.value = subtotal.toFixed(2);
       total += subtotal;
-      if (cantidad > 0) cantidadItems += 1;
+      if (cantidad > 0) cantidadItems++;
     });
 
     document.getElementById('total-venta').textContent = `$${total.toFixed(2)}`;
@@ -142,23 +164,13 @@
 
     if (productoSelect) {
       productoSelect.addEventListener('change', function () {
-        const productoId = this.value;
-        const precio = precios[productoId];
-        const stock = stocks[productoId];
+        const id = this.value;
+        const precio = precios[id];
+        const stock = stocks[id];
 
-        if (precio !== undefined) {
-          precioInput.value = precio.toFixed(2);
-        } else {
-          precioInput.value = '';
-          alert("⚠️ Este producto no tiene precio definido.");
-        }
+        precioInput.value = precio ? Number(precio).toFixed(2) : '';
 
-        if (stock !== undefined) {
-          cantidadInput.max = stock;
-        } else {
-          cantidadInput.max = 0;
-          alert("⚠️ Este producto no tiene stock disponible.");
-        }
+        cantidadInput.max = stock ?? 0;
 
         actualizarTotales();
       });
@@ -169,30 +181,36 @@
     }
 
     const eliminarBtn = fila.querySelector('.eliminar-fila');
-    if (eliminarBtn) {
-      eliminarBtn.addEventListener('click', function () {
-        fila.remove();
-        actualizarTotales();
-      });
-    }
+    eliminarBtn.addEventListener('click', () => {
+      const deleteCheckbox = fila.querySelector('input[type="checkbox"]');
+      if (deleteCheckbox) deleteCheckbox.checked = true;
+      fila.style.display = 'none';
+      actualizarTotales();
+    });
   }
 
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.item-venta').forEach(inicializarEventosFila);
     actualizarTotales();
 
-    document.getElementById('agregar-fila').addEventListener('click', function () {
-      const tabla = document.getElementById('tabla-items').querySelector('tbody');
-      const ultimaFila = tabla.querySelector('.item-venta:last-child');
-      const nuevaFila = ultimaFila.cloneNode(true);
+    const tbody = document.querySelector('#tabla-items tbody');
+    const agregarBtn = document.getElementById('agregar-fila');
 
-      nuevaFila.querySelector('.producto').selectedIndex = 0;
-      nuevaFila.querySelector('.cantidad').value = '';
-      nuevaFila.querySelector('.precio-unitario').value = '';
-      nuevaFila.querySelector('.subtotal').textContent = '$0.00';
+    agregarBtn.addEventListener('click', function () {
 
-      tabla.appendChild(nuevaFila);
+      // 🔧 FIX PRINCIPAL: CLONAR CORRECTAMENTE EL TEMPLATE COMPLETO
+      const newIndex = parseInt(totalFormsInput.value, 10);
+
+      const nuevaFila = template.content.cloneNode(true).firstElementChild;
+
+      // Actualizar __prefix__ -> newIndex
+      nuevaFila.innerHTML = nuevaFila.innerHTML.replace(/__prefix__/g, newIndex);
+
+      tbody.appendChild(nuevaFila);
       inicializarEventosFila(nuevaFila);
+
+      totalFormsInput.value = newIndex + 1;
+      actualizarTotales();
     });
 
     const medioPago = document.getElementById('id_medio_pago');
@@ -200,7 +218,7 @@
     const qrPago = document.getElementById('qr-pago');
 
     function toggleMedioPago() {
-      const valor = medioPago.value.toLowerCase();
+      const valor = (medioPago.value || '').toLowerCase();
       datosTarjeta.style.display = 'none';
       qrPago.style.display = 'none';
 
@@ -211,10 +229,9 @@
       }
     }
 
-    if (medioPago) {
-      medioPago.addEventListener('change', toggleMedioPago);
-      toggleMedioPago();
-    }
+    medioPago.addEventListener('change', toggleMedioPago);
+    toggleMedioPago();
   });
 </script>
+
 {% endblock %}

@@ -1,8 +1,11 @@
 <nav>
-  <ul class="pagination justify-content-center p-2 rounded shadow-sm" style="background-color: #F1E8E6; font-family: Georgia, serif;">
+  <ul class="pagination justify-content-center p-2 rounded shadow-sm"
+      style="background-color: #F1E8E6; font-family: Georgia, serif;">
+
     {% if page_obj.has_previous %}
       <li class="page-item">
-        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" style="color: #4B1E1E;">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}"
+           style="color: #4B1E1E; font-weight: bold;">
           &laquo; Anterior
         </a>
       </li>
@@ -12,13 +15,17 @@
       {% if num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
         {% if num == page_obj.number %}
           <li class="page-item active">
-            <span class="page-link" style="background-color: #C9A66B; border-color: #C9A66B; color: #4B1E1E;">
+            <span class="page-link"
+                  style="background-color: #C9A66B; border-color: #C9A66B; color: #4B1E1E; font-weight: bold;">
               {{ num }} <small>(Actual)</small>
             </span>
           </li>
         {% else %}
           <li class="page-item">
-            <a class="page-link" href="?page={{ num }}" style="color: #4B1E1E;">{{ num }}</a>
+            <a class="page-link" href="?page={{ num }}"
+               style="color: #4B1E1E; font-weight: bold;">
+              {{ num }}
+            </a>
           </li>
         {% endif %}
       {% endif %}
@@ -26,7 +33,8 @@
 
     {% if page_obj.has_next %}
       <li class="page-item">
-        <a class="page-link" href="?page={{ page_obj.next_page_number }}" style="color: #4B1E1E;">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}"
+           style="color: #4B1E1E; font-weight: bold;">
           Siguiente &raquo;
         </a>
       </li>

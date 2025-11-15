@@ -6,102 +6,105 @@
 
 {% block extra_buttons %}
 <div class="d-flex gap-2">
-  <a href="{% url 'home' %}" class="btn btn-outline-secondary">
-    <i class="fas fa-home"></i> Menú Inicial
-  </a>
+ 
 </div>
 {% endblock %}
 
 {% block content %}
-<form method="post">
-  {% csrf_token %}
-  <div class="card mb-4">
-    <div class="card-body" style="background-color: #F8F6F3;">
-      <!-- Medio de pago -->
-      <div class="form-group">
-        <label for="id_medio_pago">Medio de pago</label>
-        {{ form.medio_pago }}
-      </div>
+<div class="d-flex justify-content-center">
+  <div class="card shadow-sm mb-4" style="width: 100%; max-width: 900px; background-color: #F8F6F3;">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
 
-      <!-- Resto del formulario -->
-      {% for field in form %}
-        {% if field.name != 'medio_pago' %}
-          <div class="form-group">
-            {{ field.label_tag }} {{ field }}
-            {% if field.errors %}
-              <div class="text-danger">{{ field.errors }}</div>
-            {% endif %}
+        <!-- Medio de pago -->
+        <div class="form-group mb-3">
+          <label for="id_medio_pago"><i class="fas fa-credit-card"></i> Medio de pago</label>
+          {{ form.medio_pago }}
+        </div>
+
+        <!-- Resto del formulario -->
+        {% for field in form %}
+          {% if field.name != 'medio_pago' %}
+            <div class="form-group mb-3">
+              {{ field.label_tag }} {{ field }}
+              {% if field.errors %}
+                <div class="text-danger">{{ field.errors }}</div>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+
+        <!-- Campos de tarjeta -->
+        <div id="datos-tarjeta" style="display: none;" class="mt-4">
+          <div class="form-group mb-3">
+            <label for="numero_tarjeta"><i class="fas fa-credit-card-front"></i> Número de tarjeta</label>
+            <input type="text" class="form-control" id="numero_tarjeta" name="numero_tarjeta"
+                   pattern="\d{16}" maxlength="16" placeholder="XXXXXXXXXXXXXXXX"
+                   title="Ingresá los 16 dígitos sin espacios">
           </div>
-        {% endif %}
-      {% endfor %}
+          <div class="form-group mb-3">
+            <label for="fecha_vencimiento"><i class="fas fa-calendar"></i> Fecha de vencimiento</label>
+            <input type="month" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento">
+          </div>
+          <div class="form-group mb-3">
+            <label for="codigo_seguridad"><i class="fas fa-lock"></i> Código de seguridad (CVV)</label>
+            <input type="text" class="form-control" id="codigo_seguridad" name="codigo_seguridad"
+                   pattern="\d{3,4}" maxlength="4" placeholder="CVV"
+                   title="Ingresá 3 o 4 dígitos">
+          </div>
+        </div>
 
-      <!-- Campos de tarjeta -->
-      <div id="datos-tarjeta" style="display: none;" class="mt-4">
-        <div class="form-group">
-          <label for="numero_tarjeta">Número de tarjeta</label>
-          <input type="text" class="form-control" id="numero_tarjeta" name="numero_tarjeta"
-                 pattern="\d{16}" maxlength="16" placeholder="XXXXXXXXXXXXXXXX"
-                 title="Ingresá los 16 dígitos sin espacios">
+        <!-- Imagen QR -->
+        <div id="qr-pago" style="display: none;" class="mt-4 text-center">
+          <img src="{% static 'img/qr_pago.png' %}" alt="Código QR para pago" style="max-width: 200px;">
+          <p class="mt-2">Escaneá el código para completar el pago.</p>
         </div>
-        <div class="form-group">
-          <label for="fecha_vencimiento">Fecha de vencimiento</label>
-          <input type="month" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento">
-        </div>
-        <div class="form-group">
-          <label for="codigo_seguridad">Código de seguridad (CVV)</label>
-          <input type="text" class="form-control" id="codigo_seguridad" name="codigo_seguridad"
-                 pattern="\d{3,4}" maxlength="4" placeholder="CVV"
-                 title="Ingresá 3 o 4 dígitos">
-        </div>
-      </div>
 
-      <!-- Imagen QR -->
-      <div id="qr-pago" style="display: none;" class="mt-4 text-center">
-        <img src="{% static 'img/qr_pago.png' %}" alt="Código QR para pago" style="max-width: 200px;">
-        <p class="mt-2">Escaneá el código para completar el pago.</p>
-      </div>
+        {{ formset.management_form }}
+
+        <div class="table-responsive mt-4">
+          <table class="table table-bordered table-hover" id="tabla-items" style="background-color: #fff;">
+            <thead style="background-color: #4B1E1E; color: #F8F6F3;">
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Subtotal</th>
+                <th>Eliminar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for form in formset %}
+              <tr class="item-venta">
+                <td>{{ form.producto }}</td>
+                <td>{{ form.cantidad }}</td>
+                <td>{{ form.precio_unitario }}</td>
+                <td class="subtotal">$0.00</td>
+                <td><button type="button" class="btn btn-sm btn-outline-danger eliminar-fila">✖</button></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <button type="button" class="btn btn-outline-success" id="agregar-fila">
+            <i class="fas fa-plus-circle"></i> Agregar producto
+          </button>
+          <div>
+            <strong>Total:</strong> <span id="total-venta">$0.00</span> |
+            <strong>Ítems:</strong> <span id="cantidad-items">0</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-vinoteca w-100">
+          <i class="fas fa-check-circle"></i> Registrar venta
+        </button>
+      </form>
     </div>
   </div>
-
-  {{ formset.management_form }}
-
-  <table class="table table-bordered table-hover" id="tabla-items" style="background-color: #fff;">
-    <thead style="background-color: #4B1E1E; color: #F8F6F3;">
-      <tr>
-        <th>Producto</th>
-        <th>Cantidad</th>
-        <th>Precio Unitario</th>
-        <th>Subtotal</th>
-        <th>Eliminar</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for form in formset %}
-      <tr class="item-venta">
-        <td>{{ form.producto }}</td>
-        <td>{{ form.cantidad }}</td>
-        <td>{{ form.precio_unitario }}</td>
-        <td class="subtotal">$0.00</td>
-        <td><button type="button" class="btn btn-sm btn-outline-danger eliminar-fila">✖</button></td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <button type="button" class="btn btn-outline-success" id="agregar-fila">
-      <i class="fas fa-plus-circle"></i> Agregar producto
-    </button>
-    <div>
-      <strong>Total:</strong> <span id="total-venta">$0.00</span> |
-      <strong>Ítems:</strong> <span id="cantidad-items">0</span>
-    </div>
-  </div>
-
-  <button type="submit" class="btn btn-vinoteca w-100">
-    <i class="fas fa-check-circle"></i> Registrar venta
-  </button>
-</form>
+</div>
 
 <script>
   const precios = {{ precios_json|default:"{}"|safe }};
@@ -192,7 +195,6 @@
       inicializarEventosFila(nuevaFila);
     });
 
-    // Mostrar campos de tarjeta o QR según medio de pago
     const medioPago = document.getElementById('id_medio_pago');
     const datosTarjeta = document.getElementById('datos-tarjeta');
     const qrPago = document.getElementById('qr-pago');
@@ -211,7 +213,7 @@
 
     if (medioPago) {
       medioPago.addEventListener('change', toggleMedioPago);
-      toggleMedioPago(); // Ejecutar al cargar
+      toggleMedioPago();
     }
   });
 </script>

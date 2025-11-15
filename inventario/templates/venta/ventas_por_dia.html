@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<h2 class="mt-4 mb-3 text-center">📊 Ventas por Día</h2>
+<h2 class="mt-4 mb-3 text-center text-vinoteca">📊 Ventas por Día</h2>
 
 <div class="container">
   <canvas id="graficoVentas" height="100"></canvas>
@@ -20,33 +20,58 @@
           datasets: [{
             label: 'Total vendido por día',
             data: data.data,
-            borderColor: '#8B0000',
-            backgroundColor: 'rgba(139,0,0,0.1)',
+            borderColor: '#4B1E1E',              // Borgoña profundo
+            backgroundColor: 'rgba(201,166,107,0.3)', // Dorado suave translúcido
             fill: true,
-            tension: 0.3,
-            pointRadius: 4,
-            pointBackgroundColor: '#8B0000'
+            tension: 0.4,                        // Curvas más suaves
+            pointRadius: 6,
+            pointHoverRadius: 8,
+            pointBackgroundColor: '#C9A66B',     // Dorado en puntos
+            pointBorderColor: '#2C2C2C',         // Borde carbón
+            pointStyle: 'circle'
           }]
         },
         options: {
           responsive: true,
           plugins: {
-            legend: { display: true, position: 'top' },
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                color: '#2C2C2C',
+                font: { family: 'Georgia', size: 14, weight: 'bold' }
+              }
+            },
             tooltip: {
+              backgroundColor: '#4B1E1E',
+              titleColor: '#F8F6F3',
+              bodyColor: '#F8F6F3',
+              borderColor: '#C9A66B',
+              borderWidth: 1,
               callbacks: {
                 label: function(context) {
-                  return '$ ' + context.parsed.y.toLocaleString('es-AR');
+                  return '💰 $ ' + context.parsed.y.toLocaleString('es-AR');
                 }
               }
             }
           },
           scales: {
+            x: {
+              ticks: {
+                color: '#2C2C2C',
+                font: { family: 'Georgia', size: 12 }
+              },
+              grid: { color: 'rgba(75,30,30,0.1)' }
+            },
             y: {
               ticks: {
+                color: '#2C2C2C',
+                font: { family: 'Georgia', size: 12 },
                 callback: function(value) {
                   return '$ ' + value.toLocaleString('es-AR');
                 }
-              }
+              },
+              grid: { color: 'rgba(75,30,30,0.1)' }
             }
           }
         }

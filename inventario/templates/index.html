@@ -7,26 +7,27 @@
 
 {% block content %}
 {% if not user.is_authenticated %}
-<div class="row justify-content-center mb-5">
-  <div class="col-md-6">
-    <div class="card shadow-sm border-0" style="border-top: 5px solid #4B1E1E;">
-      <div class="card-body" style="background-color: #F8F6F3;">
-        <h4 class="mb-3 text-center" style="font-family: Georgia, serif;">
-          <i class="fas fa-sign-in-alt"></i> Iniciar sesión
-        </h4>
-        <form method="post" action="{% url 'login' %}">
-          {% csrf_token %}
-          {{ form|crispy }}
-          <button type="submit" class="btn btn-vinoteca w-100">
-            <i class="fas fa-door-open"></i> Ingresar
-          </button>
-        </form>
-      </div>
+<div class="d-flex justify-content-center mb-5">
+  <div class="card shadow-lg border-0" style="width: 100%; max-width: 700px; border-top: 8px solid #4B1E1E;">
+    <div class="card-body" style="background-color: #F8F6F3;">
+      <h3 class="mb-4 text-center" style="font-family: Georgia, serif; color:#4B1E1E;">
+        <i class="fas fa-sign-in-alt"></i> Bienvenida a tu Vinoteca
+      </h3>
+      <p class="text-center mb-4" style="font-size: 1.1rem; color:#2C2C2C;">
+        Iniciá sesión para gestionar productos, clientes y ventas con estilo 🍷
+      </p>
+      <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-vinoteca btn-lg w-100 mt-3">
+          <i class="fas fa-door-open"></i> Ingresar
+        </button>
+      </form>
     </div>
   </div>
 </div>
 {% else %}
-<div class="alert alert-success text-center shadow-sm" style="font-family: Georgia, serif;">
+<div class="alert alert-success text-center shadow-sm" style="font-family: Georgia, serif; font-size:1.1rem;">
   <i class="fas fa-smile-beam"></i> Hola <strong>{{ user.username }}</strong>, estás logueado.
   <form method="post" action="{% url 'logout' %}" class="d-inline ms-3">
     {% csrf_token %}
@@ -37,34 +38,34 @@
 </div>
 {% endif %}
 
-<div class="row text-center">
+<div class="row text-center mt-4">
   <div class="col-md-4 mb-4">
-    <div class="card shadow-sm h-100 border-0" style="border-top: 5px solid #4B1E1E;">
+    <div class="card shadow-sm h-100 border-0" style="border-top: 6px solid #4B1E1E;">
       <div class="card-body" style="background-color: #F8F6F3;">
-        <i class="fas fa-box fa-3x text-primary mb-3"></i>
+        <i class="fas fa-box fa-4x text-primary mb-3"></i>
         <h5 class="card-title">Productos</h5>
-        <p class="card-text">Gestioná el stock, precios e imágenes de tus productos.</p>
-        <a href="{% url 'productos:producto_list' %}" class="btn btn-outline-primary">Ver productos</a>
+        <p class="card-text">Gestioná stock, precios e imágenes de tus productos.</p>
+        <a href="{% url 'productos:producto_list' %}" class="btn btn-outline-primary btn-lg">Ver productos</a>
       </div>
     </div>
   </div>
   <div class="col-md-4 mb-4">
-    <div class="card shadow-sm h-100 border-0" style="border-top: 5px solid #4B1E1E;">
+    <div class="card shadow-sm h-100 border-0" style="border-top: 6px solid #4B1E1E;">
       <div class="card-body" style="background-color: #F8F6F3;">
-        <i class="fas fa-users fa-3x text-success mb-3"></i>
+        <i class="fas fa-users fa-4x text-success mb-3"></i>
         <h5 class="card-title">Clientes</h5>
         <p class="card-text">Consultá, editá o agregá nuevos clientes al sistema.</p>
-        <a href="{% url 'clientes:cliente_list' %}" class="btn btn-outline-success">Ver clientes</a>
+        <a href="{% url 'clientes:cliente_list' %}" class="btn btn-outline-success btn-lg">Ver clientes</a>
       </div>
     </div>
   </div>
   <div class="col-md-4 mb-4">
-    <div class="card shadow-sm h-100 border-0" style="border-top: 5px solid #4B1E1E;">
+    <div class="card shadow-sm h-100 border-0" style="border-top: 6px solid #4B1E1E;">
       <div class="card-body" style="background-color: #F8F6F3;">
-        <i class="fas fa-shopping-cart fa-3x text-warning mb-3"></i>
+        <i class="fas fa-shopping-cart fa-4x text-warning mb-3"></i>
         <h5 class="card-title">Ventas</h5>
         <p class="card-text">Registrá nuevas ventas y consultá el historial.</p>
-        <a href="{% url 'ventas:venta_list' %}" class="btn btn-outline-warning">Ver ventas</a>
+        <a href="{% url 'ventas:venta_list' %}" class="btn btn-outline-warning btn-lg">Ver ventas</a>
       </div>
     </div>
   </div>

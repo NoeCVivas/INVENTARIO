@@ -4,129 +4,142 @@
 {% load crispy_forms_tags %}
 
 {% block title %}Lista de Productos{% endblock %}
-{% block header %}Lista de Productos{% endblock %}
+{% block header %}<i class="fas fa-wine-bottle"></i> Lista de Productos{% endblock %}
 
 {% block extra_buttons %}
 <div class="d-flex gap-2 mb-3">
-    <a href="{% url 'productos:stock_bajo_list' %}" class="btn btn-outline-warning">
-        <i class="fas fa-exclamation-triangle"></i> Stock Bajo
-    </a>
-    <a href="{% url 'productos:producto_create' %}" class="btn btn-vinoteca">
-        <i class="fas fa-plus-circle"></i> Nuevo Producto
-    </a>
+  <a href="{% url 'productos:stock_bajo_list' %}" class="btn btn-outline-warning">
+    <i class="fas fa-exclamation-triangle"></i> Stock Bajo
+  </a>
+  <a href="{% url 'productos:producto_create' %}" class="btn btn-vinoteca">
+    <i class="fas fa-plus-circle"></i> Nuevo Producto
+  </a>
 </div>
 {% endblock %}
 
 {% block content %}
 
-{# Barra de búsqueda y filtros #}
-<form method="get" class="mb-3 row g-2">
-    <div class="col-md-4">
-        {{ filter.form.q|as_crispy_field }}
+<!-- Barra de búsqueda y filtros -->
+<div class="d-flex justify-content-center mb-4">
+  <div class="card shadow-sm" style="width: 100%; max-width: 800px; background-color: #F8F6F3;">
+    <div class="card-body">
+      <form method="get" class="row g-2">
+        <div class="col-md-4">
+          <label for="id_q" class="form-label"><i class="fas fa-search"></i> Buscar</label>
+          {{ filter.form.q }}
+        </div>
+        <div class="col-md-3">
+          <label for="id_stock_bajo" class="form-label"><i class="fas fa-box-open"></i> Stock bajo</label>
+          {{ filter.form.stock_bajo }}
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button type="submit" class="btn btn-outline-primary w-100">
+            <i class="fas fa-filter"></i> Filtrar
+          </button>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <a href="{% url 'productos:producto_list' %}" class="btn btn-outline-secondary w-100">
+            <i class="fas fa-eraser"></i> Limpiar
+          </a>
+        </div>
+      </form>
     </div>
-    <div class="col-md-2">
-        {{ filter.form.stock_bajo|as_crispy_field }}
-    </div>
-    <div class="col-md-2">
-        <button type="submit" class="btn btn-outline-primary w-100">Filtrar</button>
-    </div>
-    <div class="col-md-2">
-        <a href="{% url 'productos:producto_list' %}" class="btn btn-outline-secondary w-100">Limpiar</a>
-    </div>
-</form>
+  </div>
+</div>
 
 {% if productos %}
 <div class="table-responsive">
-    <table class="table table-bordered table-hover" style="background-color: #fff;">
-        <thead style="background-color: #4B1E1E; color: #F8F6F3;">
-            <tr>
-                <th class="text-right">Imagen</th>
-                <th>Nombre</th>
-                <th>SKU</th>
-                <th>Precio</th>
-                <th>Stock</th>
-                <th>Mínimo</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for producto in productos %}
-            <tr class="{% if producto.stock < producto.stock_minimo %}table-warning{% endif %}">
-                <td class="text-right">
-                    {% if producto.imagen %}
-                        <a href="#" data-toggle="modal" data-target="#imagenModal{{ producto.id }}">
-                            <img src="{{ producto.imagen.url }}"
-                                 alt="{{ producto.nombre }}"
-                                 class="img-thumbnail"
-                                 style="width: 50px; height: 50px;">
-                            <i class="fas fa-search-plus text-primary ml-2"></i>
-                        </a>
-                        <!-- Modal -->
-                        <div class="modal fade" id="imagenModal{{ producto.id }}" tabindex="-1" role="dialog" aria-labelledby="imagenModalLabel{{ producto.id }}" aria-hidden="true">
-                          <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content border-0" style="border-top: 5px solid #4B1E1E;">
-                              <div class="modal-header" style="background-color: #F8F6F3;">
-                                <h5 class="modal-title" id="imagenModalLabel{{ producto.id }}">{{ producto.nombre }}</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                              </div>
-                              <div class="modal-body text-center">
-                                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="img-fluid rounded">
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                    {% else %}
-                        <img src="{% static 'img/productos/default.jpg' %}"
-                             alt="Sin imagen"
-                             class="img-thumbnail"
-                             style="width: 50px; height: 50px;">
-                    {% endif %}
-                </td>
-                <td>{{ producto.nombre }}</td>
-                <td>{{ producto.sku }}</td>
-                <td>${{ producto.precio }}</td>
-                <td>
-                    {{ producto.stock }}
-                    {% if producto.stock < producto.stock_minimo %}
-                        <i class="fas fa-exclamation-circle text-danger ml-1"></i>
-                    {% endif %}
-                </td>
-                <td>{{ producto.stock_minimo }}</td>
-                <td>
-                    {% if producto.stock < producto.stock_minimo %}
-                        <span class="badge badge-warning">Bajo</span>
-                    {% else %}
-                        <span class="badge badge-success">OK</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <div class="btn-group btn-group-sm">
-                        <a href="{% url 'productos:producto_detail' producto.pk %}" class="btn btn-outline-info" title="Ver detalle">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <a href="{% url 'productos:producto_update' producto.pk %}" class="btn btn-outline-primary" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <a href="{% url 'productos:movimiento_create' producto.pk %}" class="btn btn-outline-success" title="Movimiento">
-                            <i class="fas fa-exchange-alt"></i>
-                        </a>
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+  <table class="table table-bordered table-hover" style="background-color: #fff;">
+    <thead style="background-color: #4B1E1E; color: #F8F6F3;">
+      <tr>
+        <th class="text-right">Imagen</th>
+        <th>Nombre</th>
+        <th>SKU</th>
+        <th>Precio</th>
+        <th>Stock</th>
+        <th>Mínimo</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for producto in productos %}
+      <tr style="{% if producto.stock < producto.stock_minimo %}background-color:#B22222; color:#fff;{% endif %}">
+        <td class="text-right">
+          {% if producto.imagen %}
+            <a href="#" data-toggle="modal" data-target="#imagenModal{{ producto.id }}">
+              <img src="{{ producto.imagen.url }}"
+                   alt="{{ producto.nombre }}"
+                   class="img-thumbnail"
+                   style="width: 50px; height: 50px;">
+              <i class="fas fa-search-plus text-primary ml-2"></i>
+            </a>
+            <!-- Modal -->
+            <div class="modal fade" id="imagenModal{{ producto.id }}" tabindex="-1" role="dialog" aria-labelledby="imagenModalLabel{{ producto.id }}" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content border-0" style="border-top: 5px solid #4B1E1E;">
+                  <div class="modal-header" style="background-color: #F8F6F3;">
+                    <h5 class="modal-title" id="imagenModalLabel{{ producto.id }}">{{ producto.nombre }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body text-center">
+                    <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="img-fluid rounded">
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <img src="{% static 'img/productos/default.jpg' %}"
+                 alt="Sin imagen"
+                 class="img-thumbnail"
+                 style="width: 50px; height: 50px;">
+          {% endif %}
+        </td>
+        <td>{{ producto.nombre }}</td>
+        <td>{{ producto.sku }}</td>
+        <td>${{ producto.precio }}</td>
+        <td>
+          {% if producto.stock < producto.stock_minimo %}
+            <span class="badge" style="background-color:#B22222; color:#fff;">{{ producto.stock }} (Bajo)</span>
+          {% else %}
+            <span class="badge" style="background-color:#6B8E23; color:#fff;">{{ producto.stock }}</span>
+          {% endif %}
+        </td>
+        <td>{{ producto.stock_minimo }}</td>
+        <td>
+          {% if producto.stock < producto.stock_minimo %}
+            <span class="badge" style="background-color:#B22222; color:#fff;">Bajo</span>
+          {% else %}
+            <span class="badge" style="background-color:#6B8E23; color:#fff;">OK</span>
+          {% endif %}
+        </td>
+        <td>
+          <div class="btn-group btn-group-sm">
+            <a href="{% url 'productos:producto_detail' producto.pk %}" class="btn btn-outline-info" title="Ver detalle">
+              <i class="fas fa-eye"></i>
+            </a>
+            <a href="{% url 'productos:producto_update' producto.pk %}" class="btn btn-outline-primary" title="Editar">
+              <i class="fas fa-edit"></i>
+            </a>
+            <a href="{% url 'productos:movimiento_create' producto.pk %}" class="btn btn-outline-success" title="Movimiento">
+              <i class="fas fa-exchange-alt"></i>
+            </a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 
 {% include 'paginator.html' with page_obj=page_obj %}
 
 {% else %}
 <div class="alert alert-info">
-    <i class="fas fa-info-circle"></i> No hay productos registrados.
-    <a href="{% url 'productos:producto_create' %}" class="btn btn-vinoteca btn-sm ml-2">Agregar primer producto</a>
+  <i class="fas fa-info-circle"></i> No hay productos registrados.
+  <a href="{% url 'productos:producto_create' %}" class="btn btn-vinoteca btn-sm ml-2">Agregar primer producto</a>
 </div>
 {% endif %}
 {% endblock %}

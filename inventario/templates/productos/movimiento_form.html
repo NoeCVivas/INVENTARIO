@@ -2,33 +2,34 @@
 {% load crispy_forms_tags %}
 
 {% block title %}Registrar Movimiento{% endblock %}
-{% block header %}Movimiento de Stock para {{ producto.nombre }}{% endblock %}
+{% block header %}<i class="fas fa-exchange-alt"></i> Movimiento de Stock para {{ producto.nombre }}{% endblock %}
 
 {% block content %}
-<div class="card shadow-sm">
-  <div class="card-body">
+<div class="d-flex justify-content-center">
+  <div class="card shadow-sm" style="width: 100%; max-width: 600px; background-color: #F8F6F3;">
+    <div class="card-body">
 
-    <!-- Información del producto -->
-    <div class="alert alert-info">
-      <i class="fas fa-box"></i>
-      <strong>Producto:</strong> {{ producto.nombre }}<br>
-      <strong>Stock actual:</strong> {{ producto.stock }}
-    </div>
-
-    <form method="post">
-      {% csrf_token %}
-      {{ form|crispy }}
-
-      <div class="mt-3 d-flex justify-content-between">
-        <a href="{% url 'productos:producto_detail' producto.pk %}" class="btn btn-outline-secondary">
-          <i class="fas fa-arrow-left"></i> Cancelar
-        </a>
-        <button type="submit" class="btn btn-success">
-          <i class="fas fa-save"></i> Registrar
-        </button>
+      <!-- Información del producto -->
+      <div class="alert alert-info">
+        <i class="fas fa-box"></i>
+        <strong>Producto:</strong> {{ producto.nombre }}<br>
+        <strong>Stock actual:</strong> {{ producto.stock }}
       </div>
-    </form>
+
+      <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+
+        <div class="mt-4 d-flex justify-content-between">
+          <a href="{% url 'productos:producto_detail' producto.pk %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Cancelar
+          </a>
+          <button type="submit" class="btn btn-vinoteca">
+            <i class="fas fa-save"></i> Registrar
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 {% endblock %}
-

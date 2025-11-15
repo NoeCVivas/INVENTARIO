@@ -19,64 +19,77 @@
 {% endblock %}
 
 {% block content %}
-<div class="card mb-4">
-  <div class="card-body">
-    <h5 class="card-title">Información del producto</h5>
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item"><strong>Nombre:</strong> {{ producto.nombre }}</li>
-      <li class="list-group-item"><strong>Descripción:</strong> {{ producto.descripcion }}</li>
-      <li class="list-group-item"><strong>Precio:</strong> ${{ producto.precio }}</li>
-      <li class="list-group-item"><strong>Stock actual:</strong> {{ producto.stock }}</li>
-      <li class="list-group-item"><strong>Stock mínimo:</strong> {{ producto.stock_minimo }}</li>
-      <li class="list-group-item"><strong>SKU:</strong> {{ producto.sku }}</li>
-    </ul>
+<div class="d-flex justify-content-center">
+  <div class="card mb-4 shadow-sm" style="width: 100%; max-width: 700px; background-color: #F8F6F3;">
+    <div class="card-body">
+      <h5 class="card-title text-vinoteca">Información del producto</h5>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"><strong>Nombre:</strong> {{ producto.nombre }}</li>
+        <li class="list-group-item"><strong>Descripción:</strong> {{ producto.descripcion }}</li>
+        <li class="list-group-item"><strong>Precio:</strong> ${{ producto.precio }}</li>
+        <li class="list-group-item">
+          <strong>Stock actual:</strong>
+          {% if producto.stock < producto.stock_minimo %}
+            <span class="badge" style="background-color:#B22222; color:#fff;">{{ producto.stock }} (Bajo)</span>
+          {% else %}
+            <span class="badge" style="background-color:#6B8E23; color:#fff;">{{ producto.stock }}</span>
+          {% endif %}
+        </li>
+        <li class="list-group-item"><strong>Stock mínimo:</strong> {{ producto.stock_minimo }}</li>
+        <li class="list-group-item"><strong>SKU:</strong> {{ producto.sku }}</li>
+      </ul>
+    </div>
   </div>
 </div>
 
 <hr>
 
-<h5>📦 Últimos movimientos de stock</h5>
-<table class="table table-sm table-striped">
-  <thead class="table-dark">
-    <tr>
-      <th>Fecha</th>
-      <th>Tipo</th>
-      <th>Cantidad</th>
-      <th>Motivo</th>
-      <th>Usuario</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for movimiento in movimientos %}
-    <tr>
-      <td>{{ movimiento.fecha|date:"d/m/Y H:i" }}</td>
-      <td>{{ movimiento.tipo }}</td>
-      <td>{{ movimiento.cantidad }}</td>
-      <td>{{ movimiento.motivo }}</td>
-      <td>{{ movimiento.usuario }}</td>
-    </tr>
-    {% empty %}
-    <tr>
-      <td colspan="5" class="text-center">No hay movimientos registrados.</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<h5 class="mt-4">📦 Últimos movimientos de stock</h5>
+<div class="table-responsive">
+  <table class="table table-sm table-striped">
+    <thead style="background-color:#4B1E1E; color:#F8F6F3;">
+      <tr>
+        <th>Fecha</th>
+        <th>Tipo</th>
+        <th>Cantidad</th>
+        <th>Motivo</th>
+        <th>Usuario</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for movimiento in movimientos %}
+      <tr>
+        <td>{{ movimiento.fecha|date:"d/m/Y H:i" }}</td>
+        <td>{{ movimiento.tipo }}</td>
+        <td>{{ movimiento.cantidad }}</td>
+        <td>{{ movimiento.motivo }}</td>
+        <td>{{ movimiento.usuario }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="text-center">No hay movimientos registrados.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
 <hr>
 
-<h5>⚖️ Ajuste de stock</h5>
-<div class="card">
-  <div class="card-body">
-    <form method="post" action="{% url 'productos:ajustar_stock' producto.pk %}">
-      {% csrf_token %}
-      {{ form_ajuste|crispy }}
-      <div class="mt-3 d-flex justify-content-end">
-        <button type="submit" class="btn btn-vinoteca">
-          <i class="fas fa-balance-scale"></i> Ajustar Stock
-        </button>
-      </div>
-    </form>
+<h5 class="mt-4">⚖️ Ajuste de stock</h5>
+<div class="d-flex justify-content-center">
+  <div class="card shadow-sm" style="width: 100%; max-width: 600px; background-color: #F8F6F3;">
+    <div class="card-body">
+      <form method="post" action="{% url 'productos:ajustar_stock' producto.pk %}">
+        {% csrf_token %}
+        {{ form_ajuste|crispy }}
+        <div class="mt-3 d-flex justify-content-end">
+          <button type="submit" class="btn btn-vinoteca">
+            <i class="fas fa-balance-scale"></i> Ajustar Stock
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 {% endblock %}

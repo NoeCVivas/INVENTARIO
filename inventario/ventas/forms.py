@@ -2,7 +2,6 @@ from django import forms
 from django.forms import inlineformset_factory
 from .models import Venta, ItemVenta
 
-
 class VentaForm(forms.ModelForm):
     class Meta:
         model = Venta
@@ -44,11 +43,23 @@ class VentaForm(forms.ModelForm):
         return cleaned_data
 
 
-# 👇 Formset para manejar múltiples productos en una venta
+# 👇 Form personalizado para ItemVenta
+class ItemVentaForm(forms.ModelForm):
+    class Meta:
+        model = ItemVenta
+        fields = ['producto', 'cantidad', 'precio_unitario', 'subtotal']
+        widgets = {
+            'producto': forms.Select(attrs={'class': 'producto'}),
+            'cantidad': forms.NumberInput(attrs={'class': 'cantidad'}),
+            'precio_unitario': forms.TextInput(attrs={'class': 'precio-unitario'}),
+            'subtotal': forms.TextInput(attrs={'readonly': 'readonly'}),
+        }
+
+# 👇 Formset usando el form personalizado
 ItemVentaFormSet = inlineformset_factory(
     Venta,
     ItemVenta,
-    fields=['producto', 'cantidad', 'precio_unitario', 'subtotal'],
-    extra=1,          # cantidad de formularios vacíos adicionales
-    can_delete=True   # permite eliminar filas
+    form=ItemVentaForm,
+    extra=1,
+    can_delete=True
 )

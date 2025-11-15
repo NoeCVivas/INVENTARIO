@@ -5,26 +5,28 @@ from django.contrib import messages
 from django.db.models import Q, F
 from django.utils import timezone
 from django_filters.views import FilterView
-
 from .models import Producto, MovimientoStock
 from .forms import ProductoForm, MovimientoStockForm, AjusteStockForm
 from .filters import ProductoFilter
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
 # Listado general con filtros y paginación
-class ProductoListView(FilterView):
+class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
     model = Producto
     filterset_class = ProductoFilter
     template_name = 'productos/producto_list.html'
     context_object_name = 'productos'
     paginate_by = 5
+    permission_required = 'productos.view_producto'
 
 
 # Detalle de producto con últimos movimientos y formulario de ajuste
-class ProductoDetailView(DetailView):
+class ProductoDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Producto
     template_name = 'productos/producto_detail.html'
     context_object_name = 'producto'
+    permission_required = 'productos.view_producto'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -34,11 +36,12 @@ class ProductoDetailView(DetailView):
 
 
 # Crear producto con movimiento inicial si hay stock
-class ProductoCreateView(CreateView):
+class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Producto
     form_class = ProductoForm
     template_name = 'productos/producto_form.html'
     success_url = reverse_lazy('productos:producto_list')
+    permission_required = 'productos.add_producto'
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -56,11 +59,12 @@ class ProductoCreateView(CreateView):
 
 
 # Actualizar producto
-class ProductoUpdateView(UpdateView):
+class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Producto
     form_class = ProductoForm
     template_name = 'productos/producto_form.html'
     success_url = reverse_lazy('productos:producto_list')
+    permission_required = 'productos.change_producto'
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -69,10 +73,11 @@ class ProductoUpdateView(UpdateView):
 
 
 # Eliminar producto
-class ProductoDeleteView(DeleteView):
+class ProductoDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Producto
     template_name = 'productos/producto_confirm_delete.html'
     success_url = reverse_lazy('productos:producto_list')
+    permission_required = 'productos.delete_producto'
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, 'Producto eliminado exitosamente.')
@@ -80,10 +85,11 @@ class ProductoDeleteView(DeleteView):
 
 
 # Registrar movimiento de stock (entrada/salida)
-class MovimientoStockCreateView(CreateView):
+class MovimientoStockCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = MovimientoStock
     form_class = MovimientoStockForm
     template_name = 'productos/movimiento_form.html'
+    permission_required = 'productos.add_movimientostock'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -117,9 +123,10 @@ class MovimientoStockCreateView(CreateView):
 
 
 # Ajuste manual de stock
-class AjusteStockView(FormView):
+class AjusteStockView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     form_class = AjusteStockForm
     template_name = 'productos/ajuste_stock_form.html'
+    permission_required = 'productos.change_producto'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -152,11 +159,12 @@ class AjusteStockView(FormView):
 
 
 # Listado de productos con stock bajo + paginación
-class StockBajoListView(ListView):
+class StockBajoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Producto
     template_name = 'productos/stock_bajo_list.html'
     context_object_name = 'productos'
     paginate_by = 5
+    permission_required = 'productos.view_producto'
 
     def get_queryset(self):
         return Producto.objects.filter(stock__lt=F('stock_minimo')).order_by('stock')

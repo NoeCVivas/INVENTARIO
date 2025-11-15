@@ -17,7 +17,7 @@
   {% csrf_token %}
   <div class="card mb-4">
     <div class="card-body" style="background-color: #F8F6F3;">
-      <!-- Medio de pago con id controlado -->
+      <!-- Medio de pago -->
       <div class="form-group">
         <label for="id_medio_pago">Medio de pago</label>
         {{ form.medio_pago }}
@@ -44,8 +44,8 @@
                  title="Ingresá los 16 dígitos sin espacios">
         </div>
         <div class="form-group">
-          <label for="vencimiento_tarjeta">Fecha de vencimiento</label>
-          <input type="month" class="form-control" id="vencimiento_tarjeta" name="vencimiento_tarjeta">
+          <label for="fecha_vencimiento">Fecha de vencimiento</label>
+          <input type="month" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento">
         </div>
         <div class="form-group">
           <label for="codigo_seguridad">Código de seguridad (CVV)</label>
@@ -55,7 +55,7 @@
         </div>
       </div>
 
-      <!-- 📱 Imagen QR -->
+      <!-- Imagen QR -->
       <div id="qr-pago" style="display: none;" class="mt-4 text-center">
         <img src="{% static 'img/qr_pago.png' %}" alt="Código QR para pago" style="max-width: 200px;">
         <p class="mt-2">Escaneá el código para completar el pago.</p>
@@ -202,14 +202,9 @@
       datosTarjeta.style.display = 'none';
       qrPago.style.display = 'none';
 
-      if (
-        valor.includes('tarjeta') ||
-        valor.includes('crédito') ||
-        valor.includes('debito') ||
-        valor.includes('débito')
-      ) {
+      if (valor === 'credito' || valor === 'debito') {
         datosTarjeta.style.display = 'block';
-      } else if (valor.includes('qr')) {
+      } else if (valor === 'qr') {
         qrPago.style.display = 'block';
       }
     }

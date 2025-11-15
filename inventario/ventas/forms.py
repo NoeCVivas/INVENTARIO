@@ -1,61 +1,54 @@
 from django import forms
 from django.forms import inlineformset_factory
 from .models import Venta, ItemVenta
-from productos.models import Producto
-from datetime import date
+
 
 class VentaForm(forms.ModelForm):
     class Meta:
         model = Venta
-        fields = ['cliente', 'medio_pago', 'fecha']
-        widgets = {
-            'cliente': forms.Select(attrs={'class': 'form-control w-50'}),
-            'medio_pago': forms.Select(attrs={
-                'class': 'form-control w-25',
-                'id': 'id_medio_pago'
-            }),
-            'fecha': forms.DateInput(attrs={
-                'type': 'date',
-                'class': 'form-control w-25'
-            }),
-        }
+        fields = ['cliente', 'fecha', 'medio_pago']
 
-class ItemVentaForm(forms.ModelForm):
-    class Meta:
-        model = ItemVenta
-        fields = ['producto', 'cantidad', 'precio_unitario']
-        widgets = {
-            'producto': forms.Select(attrs={
-                'class': 'form-control producto'
-            }),
-            'cantidad': forms.NumberInput(attrs={
-                'class': 'form-control cantidad',
-                'min': 1
-            }),
-            'precio_unitario': forms.NumberInput(attrs={
-                'readonly': 'readonly',
-                'class': 'form-control precio-unitario'
-            }),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['producto'].queryset = Producto.objects.filter(stock__gt=0)
+    # Campos adicionales para tarjeta
+    numero_tarjeta = forms.CharField(
+        label="Número de tarjeta",
+        max_length=16,
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': '16 dígitos'})
+    )
+    codigo_seguridad = forms.CharField(
+        label="Código de seguridad",
+        max_length=4,
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'CVV'})
+    )
+    fecha_vencimiento = forms.CharField(
+        label="Fecha de vencimiento",
+        max_length=5,
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'MM/AA'})
+    )
 
     def clean(self):
         cleaned_data = super().clean()
-        producto = cleaned_data.get('producto')
-        cantidad = cleaned_data.get('cantidad')
+        medio_pago = cleaned_data.get("medio_pago")
 
-        if not producto:
-            raise forms.ValidationError("Debe seleccionar un producto.")
-        if not cantidad or cantidad <= 0:
-            raise forms.ValidationError("La cantidad debe ser mayor a cero.")
+        # Validación solo si el medio de pago es tarjeta
+        if medio_pago in ["credito", "debito"]:
+            if not cleaned_data.get("numero_tarjeta"):
+                self.add_error("numero_tarjeta", "Debe ingresar el número de tarjeta.")
+            if not cleaned_data.get("codigo_seguridad"):
+                self.add_error("codigo_seguridad", "Debe ingresar el código de seguridad.")
+            if not cleaned_data.get("fecha_vencimiento"):
+                self.add_error("fecha_vencimiento", "Debe ingresar la fecha de vencimiento.")
+
         return cleaned_data
 
+
+# 👇 Formset para manejar múltiples productos en una venta
 ItemVentaFormSet = inlineformset_factory(
-    Venta, ItemVenta,
-    form=ItemVentaForm,
-    extra=1,
-    can_delete=True
+    Venta,
+    ItemVenta,
+    fields=['producto', 'cantidad', 'precio_unitario', 'subtotal'],
+    extra=1,          # cantidad de formularios vacíos adicionales
+    can_delete=True   # permite eliminar filas
 )

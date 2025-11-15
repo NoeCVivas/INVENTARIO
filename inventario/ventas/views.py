@@ -47,10 +47,10 @@ class VentaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         if form.is_valid() and formset.is_valid():
             medio_pago = form.cleaned_data['medio_pago'].lower()
 
-            # ✅ Validación de campos de tarjeta si se elige tarjeta
-            if 'tarjeta' in medio_pago:
+            # ✅ Validación de campos de tarjeta si se elige crédito o débito
+            if medio_pago in ["credito", "debito"]:
                 numero = request.POST.get('numero_tarjeta', '').strip()
-                vencimiento = request.POST.get('vencimiento_tarjeta', '').strip()
+                vencimiento = request.POST.get('fecha_vencimiento', '').strip()
                 cvv = request.POST.get('codigo_seguridad', '').strip()
 
                 if not numero or not vencimiento or not cvv:
@@ -67,6 +67,9 @@ class VentaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
                 venta.save()
 
                 for item_form in formset:
+                    if not item_form.cleaned_data:
+                        continue  # Ignora filas vacías
+
                     item = item_form.save(commit=False)
                     item.venta = venta
 

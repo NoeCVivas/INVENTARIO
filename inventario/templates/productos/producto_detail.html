@@ -1,9 +1,25 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
 {% block title %}Detalle de Producto{% endblock %}
-{% block header %}{{ producto.nombre }}{% endblock %}
+{% block header %}<i class="fas fa-box-open"></i> {{ producto.nombre }}{% endblock %}
+
+{% block extra_buttons %}
+<div class="d-flex gap-2">
+  <a href="{% url 'productos:producto_update' producto.pk %}" class="btn btn-outline-primary">
+    <i class="fas fa-edit"></i> Editar
+  </a>
+  <a href="{% url 'productos:producto_delete' producto.pk %}" class="btn btn-outline-danger">
+    <i class="fas fa-trash-alt"></i> Eliminar
+  </a>
+  <a href="{% url 'productos:producto_list' %}" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left"></i> Volver
+  </a>
+</div>
+{% endblock %}
 
 {% block content %}
-<div class="card">
+<div class="card mb-4">
   <div class="card-body">
     <h5 class="card-title">Información del producto</h5>
     <ul class="list-group list-group-flush">
@@ -12,27 +28,16 @@
       <li class="list-group-item"><strong>Precio:</strong> ${{ producto.precio }}</li>
       <li class="list-group-item"><strong>Stock actual:</strong> {{ producto.stock }}</li>
       <li class="list-group-item"><strong>Stock mínimo:</strong> {{ producto.stock_minimo }}</li>
+      <li class="list-group-item"><strong>SKU:</strong> {{ producto.sku }}</li>
     </ul>
-
-    <div class="mt-3">
-      <a href="{% url 'productos:producto_update' producto.pk %}" class="btn btn-primary">
-        <i class="fas fa-edit"></i> Editar
-      </a>
-      <a href="{% url 'productos:producto_delete' producto.pk %}" class="btn btn-danger">
-        <i class="fas fa-trash-alt"></i> Eliminar
-      </a>
-      <a href="{% url 'productos:producto_list' %}" class="btn btn-secondary">
-        <i class="fas fa-arrow-left"></i> Volver
-      </a>
-    </div>
   </div>
 </div>
 
 <hr>
 
-<h5>Últimos movimientos de stock</h5>
+<h5>📦 Últimos movimientos de stock</h5>
 <table class="table table-sm table-striped">
-  <thead>
+  <thead class="table-dark">
     <tr>
       <th>Fecha</th>
       <th>Tipo</th>
@@ -52,9 +57,26 @@
     </tr>
     {% empty %}
     <tr>
-      <td colspan="5">No hay movimientos registrados.</td>
+      <td colspan="5" class="text-center">No hay movimientos registrados.</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
+
+<hr>
+
+<h5>⚖️ Ajuste de stock</h5>
+<div class="card">
+  <div class="card-body">
+    <form method="post" action="{% url 'productos:ajustar_stock' producto.pk %}">
+      {% csrf_token %}
+      {{ form_ajuste|crispy }}
+      <div class="mt-3 d-flex justify-content-end">
+        <button type="submit" class="btn btn-vinoteca">
+          <i class="fas fa-balance-scale"></i> Ajustar Stock
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}

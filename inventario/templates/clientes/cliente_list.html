@@ -10,7 +10,7 @@
   <a href="{% url 'clientes:cliente_create' %}" class="btn btn-primary">Nuevo cliente</a>
 </div>
 
-<form method="get" class="mb-3 d-flex" role="search">
+<form method="get" class="mb-3 d-flex align-items-center" role="search">
   <input
     name="q"
     value="{{ request.GET.q|default_if_none:'' }}"
@@ -18,17 +18,11 @@
     type="search"
     placeholder="Buscar por documento, nombre o apellido"
     aria-label="Buscar">
-  <button class="btn btn-outline-primary" type="submit">Buscar</button>
+  <button class="btn btn-outline-primary me-2" type="submit">Buscar</button>
   {% if request.GET.q %}
-    <a href="{% url 'clientes:cliente_list' %}" class="btn btn-outline-secondary ms-2">Limpiar</a>
+    <a href="{% url 'clientes:cliente_list' %}" class="btn btn-outline-secondary">Limpiar</a>
   {% endif %}
 </form>
-
-<div class="mb-3">
-  <form method="get" class="row g-2">
-    {{ filter.form.q|as_crispy_field }}
-  </form>
-</div>
 
 <table class="table table-hover table-bordered">
   <thead class="table-secondary">

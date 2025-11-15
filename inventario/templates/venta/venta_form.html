@@ -4,11 +4,7 @@
 {% block title %}Registrar Venta{% endblock %}
 {% block header %}<i class="fas fa-receipt"></i> Registrar Nueva Venta{% endblock %}
 
-{% block extra_buttons %}
-<div class="d-flex gap-2">
- 
-</div>
-{% endblock %}
+{% block extra_buttons %}{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-center">
@@ -17,41 +13,45 @@
       <form method="post">
         {% csrf_token %}
 
-        <!-- Medio de pago -->
-        <div class="form-group mb-3">
-          <label for="id_medio_pago"><i class="fas fa-credit-card"></i> Medio de pago</label>
-          {{ form.medio_pago }}
+        <!-- Medio de pago y cliente -->
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <label for="id_medio_pago"><i class="fas fa-credit-card"></i> Medio de pago</label>
+            {{ form.medio_pago }}
+          </div>
+          <div class="col-md-6">
+            <label for="id_cliente"><i class="fas fa-user"></i> Cliente</label>
+            {{ form.cliente }}
+          </div>
         </div>
 
-        <!-- Resto del formulario -->
-        {% for field in form %}
-          {% if field.name != 'medio_pago' %}
-            <div class="form-group mb-3">
-              {{ field.label_tag }} {{ field }}
-              {% if field.errors %}
-                <div class="text-danger">{{ field.errors }}</div>
-              {% endif %}
-            </div>
-          {% endif %}
-        {% endfor %}
+        <!-- Fecha separada -->
+        <div class="row mb-4">
+          <div class="col-md-4">
+            <label for="id_fecha"><i class="fas fa-calendar-alt"></i> Fecha</label>
+            {{ form.fecha }}
+          </div>
+        </div>
 
-        <!-- Campos de tarjeta -->
+        <!-- Campos de tarjeta alineados -->
         <div id="datos-tarjeta" style="display: none;" class="mt-4">
-          <div class="form-group mb-3">
-            <label for="numero_tarjeta"><i class="fas fa-credit-card-front"></i> Número de tarjeta</label>
-            <input type="text" class="form-control" id="numero_tarjeta" name="numero_tarjeta"
-                   pattern="\d{16}" maxlength="16" placeholder="XXXXXXXXXXXXXXXX"
-                   title="Ingresá los 16 dígitos sin espacios">
-          </div>
-          <div class="form-group mb-3">
-            <label for="fecha_vencimiento"><i class="fas fa-calendar"></i> Fecha de vencimiento</label>
-            <input type="month" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento">
-          </div>
-          <div class="form-group mb-3">
-            <label for="codigo_seguridad"><i class="fas fa-lock"></i> Código de seguridad (CVV)</label>
-            <input type="text" class="form-control" id="codigo_seguridad" name="codigo_seguridad"
-                   pattern="\d{3,4}" maxlength="4" placeholder="CVV"
-                   title="Ingresá 3 o 4 dígitos">
+          <div class="row">
+            <div class="col-md-4">
+              <label for="numero_tarjeta"><i class="fas fa-credit-card-front"></i> Número de tarjeta</label>
+              <input type="text" class="form-control" id="numero_tarjeta" name="numero_tarjeta"
+                     pattern="\d{16}" maxlength="16" placeholder="XXXXXXXXXXXXXXXX"
+                     title="Ingresá los 16 dígitos sin espacios">
+            </div>
+            <div class="col-md-4">
+              <label for="codigo_seguridad"><i class="fas fa-lock"></i> CVV</label>
+              <input type="text" class="form-control" id="codigo_seguridad" name="codigo_seguridad"
+                     pattern="\d{3,4}" maxlength="4" placeholder="CVV"
+                     title="Ingresá 3 o 4 dígitos">
+            </div>
+            <div class="col-md-4">
+              <label for="fecha_vencimiento"><i class="fas fa-calendar"></i> Vencimiento</label>
+              <input type="month" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento">
+            </div>
           </div>
         </div>
 

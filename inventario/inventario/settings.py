@@ -129,10 +129,7 @@ ACCOUNT_SIGNUP_FIELDS = ["email", "username*", "password1*", "password2*"]
 
 # Verificación / comportamiento
 ACCOUNT_EMAIL_VERIFICATION = 'none'          # 'mandatory', 'optional' o 'none'
-ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_USERNAME_REQUIRED = True
+
 
 ACCOUNT_SIGNUP_REDIRECT_URL = '/accounts/login/'
 
-# django-filter: configuración opcional (no requerida para funcionar)
-# REST_FRAMEWORK / FILTER_BACKENDS no aplican si no usás DRF

@@ -1,0 +1,34 @@
+[
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$600000$k7yJ0EmHEQ6fs2SWJLmRwI$Rg7H96sa6sc74rzWD9th4OnEICq6cDiZuTlYc36zEdA=",
+    "last_login": "2025-11-18T04:04:29.225Z",
+    "is_superuser": true,
+    "username": "Noelia",
+    "first_name": "",
+    "last_name": "",
+    "email": "noeliac_vivas@hotmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-11-18T04:03:52.074Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "enwkyydl6he17xog7vgke223t7bgmc0h",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGln-xD9K-pzBWu_aOIAcKU4qxN1JpBTQzsx7bxZhW2vcel7iROzKJLv8sgT4zO0Q9IB2nznObV2mxI-En7bzcab8up3t30GFXvd1RuMsFQMZpNFSo9Q-BxAkwyC8cl6gDyWAVeRQJRJWKy2ELjtBCQP7fAHcxjde:1vLCxB:R3bX68kXDplSYrD3_FBxCT8E84NMZzBPtG5iEGBPrgk",
+    "expire_date": "2025-12-02T04:04:29.229Z"
+  }
+},
+{
+  "model": "sites.site",
+  "fields": {
+    "domain": "example.com",
+    "name": "example.com"
+  }
+}
+]

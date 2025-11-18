@@ -1,0 +1,242 @@
+[
+  {
+    "model": "clientes.cliente",
+    "pk": 1,
+    "fields": {
+      "nombre": "Noelia",
+      "apellido": "Vivas",
+      "documento": "32372085",
+      "email": "noelia.vivas@example.com",
+      "telefono": "3511111111",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 2,
+    "fields": {
+      "nombre": "Martín",
+      "apellido": "Gómez",
+      "documento": "28456123",
+      "email": "martin.gomez@example.com",
+      "telefono": "3512222222",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 3,
+    "fields": {
+      "nombre": "Lucía",
+      "apellido": "Pérez",
+      "documento": "30547896",
+      "email": "lucia.perez@example.com",
+      "telefono": "3513333333",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 4,
+    "fields": {
+      "nombre": "Julián",
+      "apellido": "Fernández",
+      "documento": "29874512",
+      "email": "julian.fernandez@example.com",
+      "telefono": "3514444444",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 5,
+    "fields": {
+      "nombre": "Carla",
+      "apellido": "Ramírez",
+      "documento": "31245678",
+      "email": "carla.ramirez@example.com",
+      "telefono": "3515555555",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 6,
+    "fields": {
+      "nombre": "Federico",
+      "apellido": "López",
+      "documento": "28765432",
+      "email": "federico.lopez@example.com",
+      "telefono": "3516666666",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 7,
+    "fields": {
+      "nombre": "Sofía",
+      "apellido": "Martínez",
+      "documento": "30123456",
+      "email": "sofia.martinez@example.com",
+      "telefono": "3517777777",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 8,
+    "fields": {
+      "nombre": "Diego",
+      "apellido": "Castro",
+      "documento": "29456789",
+      "email": "diego.castro@example.com",
+      "telefono": "3518888888",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 9,
+    "fields": {
+      "nombre": "Valentina",
+      "apellido": "Ruiz",
+      "documento": "31098765",
+      "email": "valentina.ruiz@example.com",
+      "telefono": "3519999999",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 10,
+    "fields": {
+      "nombre": "Agustín",
+      "apellido": "Torres",
+      "documento": "28901234",
+      "email": "agustin.torres@example.com",
+      "telefono": "3511010101",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 11,
+    "fields": {
+      "nombre": "Camila",
+      "apellido": "Sánchez",
+      "documento": "30654321",
+      "email": "camila.sanchez@example.com",
+      "telefono": "3512020202",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 12,
+    "fields": {
+      "nombre": "Tomás",
+      "apellido": "Molina",
+      "documento": "29567890",
+      "email": "tomas.molina@example.com",
+      "telefono": "3513030303",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 13,
+    "fields": {
+      "nombre": "Florencia",
+      "apellido": "Navarro",
+      "documento": "31123456",
+      "email": "florencia.navarro@example.com",
+      "telefono": "3514040404",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 14,
+    "fields": {
+      "nombre": "Matías",
+      "apellido": "Rojas",
+      "documento": "28876543",
+      "email": "matias.rojas@example.com",
+      "telefono": "3515050505",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 15,
+    "fields": {
+      "nombre": "Julieta",
+      "apellido": "Silva",
+      "documento": "30234567",
+      "email": "julieta.silva@example.com",
+      "telefono": "3516060606",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 16,
+    "fields": {
+      "nombre": "Nicolás",
+      "apellido": "Vega",
+      "documento": "29765432",
+      "email": "nicolas.vega@example.com",
+      "telefono": "3517070707",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 17,
+    "fields": {
+      "nombre": "Micaela",
+      "apellido": "Córdoba",
+      "documento": "30987654",
+      "email": "micaela.cordoba@example.com",
+      "telefono": "3518080808",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 18,
+    "fields": {
+      "nombre": "Sebastián",
+      "apellido": "Luna",
+      "documento": "29012345",
+      "email": "sebastian.luna@example.com",
+      "telefono": "3519090909",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 19,
+    "fields": {
+      "nombre": "Rocío",
+      "apellido": "Moreno",
+      "documento": "31345678",
+      "email": "rocio.moreno@example.com",
+      "telefono": "3511112222",
+      "direccion": ""
+    }
+  },
+  {
+    "model": "clientes.cliente",
+    "pk": 20,
+    "fields": {
+      "nombre": "Leandro",
+      "apellido": "Ponce",
+      "documento": "28678901",
+      "email": "leandro.ponce@example.com",
+      "telefono": "3512223333",
+      "direccion": ""
+    }
+  }
+]

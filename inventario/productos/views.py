@@ -48,7 +48,7 @@ class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
         if form.cleaned_data['stock'] > 0:
             MovimientoStock.objects.create(
                 producto=self.object,
-                tipo="Entrada",
+                tipo="entrada",  # usar minúscula para coincidir con el modelo
                 cantidad=form.cleaned_data['stock'],
                 motivo="Stock inicial",
                 fecha=timezone.now(),
@@ -107,16 +107,7 @@ class MovimientoStockCreateView(LoginRequiredMixin, PermissionRequiredMixin, Cre
         movimiento.producto = producto
         movimiento.usuario = self.request.user.username if self.request.user.is_authenticated else 'Sistema'
 
-        if movimiento.tipo == 'Entrada':
-            producto.stock += movimiento.cantidad
-        elif movimiento.tipo == 'Salida':
-            if producto.stock >= movimiento.cantidad:
-                producto.stock -= movimiento.cantidad
-            else:
-                form.add_error('cantidad', 'No hay suficiente stock para realizar esta salida.')
-                return self.form_invalid(form)
-
-        producto.save()
+        # No tocamos producto.stock aquí, lo maneja MovimientoStock.save()
         movimiento.save()
         messages.success(self.request, 'Movimiento de stock registrado exitosamente.')
         return redirect('productos:producto_detail', pk=producto.pk)
@@ -140,7 +131,7 @@ class AjusteStockView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
         diferencia = nueva_cantidad - producto.stock
 
         if diferencia != 0:
-            tipo = 'Entrada' if diferencia > 0 else 'Salida'
+            tipo = 'entrada' if diferencia > 0 else 'salida'
             MovimientoStock.objects.create(
                 producto=producto,
                 tipo=tipo,
@@ -149,8 +140,7 @@ class AjusteStockView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
                 fecha=timezone.now(),
                 usuario=self.request.user.username if self.request.user.is_authenticated else 'Sistema'
             )
-            producto.stock = nueva_cantidad
-            producto.save()
+            # producto.stock se ajusta automáticamente en MovimientoStock.save()
             messages.success(self.request, 'Ajuste de stock realizado exitosamente.')
         else:
             messages.info(self.request, 'No se realizó ningún ajuste ya que la cantidad es la misma.')

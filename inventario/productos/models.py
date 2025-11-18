@@ -96,3 +96,22 @@ class MovimientoStock(models.Model):
 
     def __str__(self):
         return f"{self.producto.nombre} - {self.get_tipo_display()} - {self.cantidad}"
+
+    def save(self, *args, **kwargs):
+        # Si es un nuevo movimiento (no actualización)
+        if not self.pk:
+            if self.tipo == "entrada":
+                self.producto.stock += self.cantidad
+            elif self.tipo == "salida":
+                # Evitamos stock negativo
+                if self.producto.stock - self.cantidad < 0:
+                    raise ValidationError("No hay suficiente stock para realizar la salida.")
+                self.producto.stock -= self.cantidad
+            elif self.tipo == "ajuste":
+                # Ajuste: se asigna directamente la cantidad como stock
+                self.producto.stock = self.cantidad
+
+            # Guardar cambios en producto
+            self.producto.save()
+
+        super().save(*args, **kwargs)
